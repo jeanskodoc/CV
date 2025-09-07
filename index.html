@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppliCours - Créateur de cours interactifs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            grid-template-rows: auto 1fr auto;
+            gap: 20px;
+            grid-template-areas: 
+                "header header"
+                "sidebar main"
+                "footer footer";
+            min-height: 100vh;
+        }
+        
+        header {
+            grid-area: header;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .app-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .app-title h1 {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-secondary {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #27ae60;
+        }
+        
+        .btn-tertiary {
+            background: #9b59b6;
+            color: white;
+        }
+        
+        .btn-tertiary:hover {
+            background: #8e44ad;
+        }
+        
+        .sidebar {
+            grid-area: sidebar;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar h3 {
+            margin: 20px 0 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar ul {
+            list-style: none;
+        }
+        
+        .sidebar li {
+            margin: 10px 0;
+        }
+        
+        .sidebar a {
+            color: #ecf0f1;
+            text-decoration: none;
+            display: block;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .sidebar a:hover {
+            background: #3498db;
+        }
+        
+        .main-content {
+            grid-area: main;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            height: 100%;
+        }
+        
+        .editor-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+        
+        .preview-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .content-type-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .content-type-btn {
+            padding: 8px 15px;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .content-type-btn.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        .media-upload {
+            border: 2px dashed #3498db;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .media-upload:hover {
+            background: #e8f4fc;
+        }
+        
+        .media-preview {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .media-item {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .media-item img, .media-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .media-item audio {
+            width: 100%;
+            margin-top: 35px;
+        }
+        
+        .remove-media {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #e74c3c;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        /* Éditeur de texte enrichi */
+        .rich-text-editor {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .toolbar button {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .toolbar button:hover {
+            background: #e0e0e0;
+        }
+        
+        .toolbar button.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        .color-btn {
+            position: relative;
+        }
+        
+        .color-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .color-option {
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .color-red { background: #ff4d4d; }
+        .color-blue { background: #3498db; }
+        .color-green { background: #2ecc71; }
+        
+        .color-btn:hover .color-options {
+            display: flex;
+        }
+        
+        .editor-content {
+            min-height: 200px;
+            padding: 15px;
+            outline: none;
+            overflow-y: auto;
+            background: white;
+        }
+        
+        .editor-content:focus {
+            border-color: #3498db;
+        }
+        
+        /* Styles pour le texte formaté */
+        .text-red { color: #ff4d4d; }
+        .text-blue { color: #3498db; }
+        .text-green { color: #2ecc71; }
+        .text-bold { font-weight: bold; }
+        .text-italic { font-style: italic; }
+        .text-underline { text-decoration: underline; }
+        .text-strike { text-decoration: line-through; }
+        
+        .chapter {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .chapter h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chapter-content {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .prerequisites {
+            background: #ffeaa7;
+            border-left: 5px solid #fdcb6e;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .problem-situation {
+            background: #ffeaa7;
+            border-left: 5px solid #fdcb6e;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .situation-solution {
+            background: #d8f8ff;
+            border-left: 5px solid #81ecec;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .activity {
+            background: #e7f9ed;
+            border-left: 5px solid #2ecc71;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .activity-solution {
+            background: #f4ecf7;
+            border-left: 5px solid #9b59b6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .solution-proposal {
+            background: #d8f8ff;
+            border-left: 5px solid #81ecec;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .definition {
+            background: #e8f4fc;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .theorem {
+            background: #e8f4fc;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .formula {
+            font-family: 'Cambria Math', serif;
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px dashed #3498db;
+        }
+        
+        .example {
+            background: #e7f9ed;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 5px solid #2ecc71;
+        }
+        
+        .exercise {
+            background: #fef9e7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 5px solid #f1c40f;
+        }
+        
+        .exercise-solution {
+            background: #f4ecf7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 5px solid #9b59b6;
+        }
+        
+        .solution {
+            background: #f4ecf7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 5px solid #9b59b6;
+            display: none;
+        }
+        
+        .toggle-solution {
+            background: #9b59b6;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        
+        .toggle-solution:hover {
+            background: #8e44ad;
+        }
+        
+        .summary {
+            background: #fdebd0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+        }
+        
+        .homework {
+            background: #e8d6ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #8e44ad;
+        }
+        
+        .geometry-demo {
+            width: 100%;
+            height: 250px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .triangle {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+        
+        .triangle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 100px solid transparent;
+            border-right: 100px solid transparent;
+            border-bottom: 173px solid #3498db;
+        }
+        
+        .triangle-labels {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .label {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            grid-area: footer;
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .media-controls {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .media-btn {
+            padding: 8px 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* Styles pour l'exportation */
+        .export-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .export-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .export-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .export-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .export-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 1100px) {
+            .editor-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                grid-template-areas: 
+                    "header"
+                    "main"
+                    "sidebar"
+                    "footer";
+            }
+            
+            .sidebar {
+                order: 3;
+            }
+            
+            .main-content {
+                order: 2;
+            }
+            
+            footer {
+                order: 4;
+            }
+            
+            .content-type-selector {
+                flex-direction: column;
+            }
+            
+            .toolbar {
+                justify-content: center;
+            }
+            
+            .header-actions {
+                flex-direction: column;
+                align-items: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="app-title">
+                <i class="fas fa-chalkboard-teacher fa-2x"></i>
+                <h1>AppliCours - Créateur de cours interactifs</h1>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" id="new-course">
+                    <i class="fas fa-plus"></i> Nouveau cours
+                </button>
+                <button class="btn btn-secondary" id="save-course">
+                    <i class="fas fa-save"></i> Sauvegarder
+                </button>
+            </div>
+        </header>
+        
+        <div class="sidebar">
+            <h3><i class="fas fa-book"></i> Chapitres</h3>
+            <ul id="chapters-list">
+                <li><a href="#" data-chapter="situation-probleme"><i class="fas fa-angle-right"></i> Situation Problème</a></li>
+                <li><a href="#" data-chapter="prerequis"><i class="fas fa-angle-right"></i> Prérequis</a></li>
+                <li><a href="#" data-chapter="activite"><i class="fas fa-angle-right"></i> Activité</a></li>
+                <li><a href="#" data-chapter="definitions"><i class="fas fa-angle-right"></i> Définitions</a></li>
+                <li><a href="#" data-chapter="pythagore"><i class="fas fa-angle-right"></i> Théorème de Pythagore</a></li>
+                <li><a href="#" data-chapter="reciproque-pythagore"><i class="fas fa-angle-right"></i> Réciproque de Pythagore</a></li>
+                <li><a href="#" data-chapter="thales"><i class="fas fa-angle-right"></i> Théorème de Thalès</a></li>
+                <li><a href="#" data-chapter="reciproque-thales"><i class="fas fa-angle-right"></i> Réciproque de Thalès</a></li>
+                <li><a href="#" data-chapter="exercices"><i class="fas fa-angle-right"></i> Exercices</a></li>
+                <li><a href="#" data-chapter="resume"><i class="fas fa-angle-right"></i> Résumé</a></li>
+                <li><a href="#" data-chapter="devoir-maison"><i class="fas fa-angle-right"></i> Devoir Maison</a></li>
+            </ul>
+            
+            <h3><i class="fas fa-cog"></i> Outils</h3>
+            <ul>
+                <li><a href="#" id="add-chapter"><i class="fas fa-plus-circle"></i> Ajouter un chapitre</a></li>
+                <li><a href="#" id="add-exercise"><i class="fas fa-plus-circle"></i> Ajouter un exercice</a></li>
+                <li><a href="#" id="add-activity"><i class="fas fa-plus-circle"></i> Ajouter une activité</a></li>
+                <li><a href="#" id="add-media"><i class="fas fa-plus-circle"></i> Ajouter un média</a></li>
+            </ul>
+            
+            <h3><i class="fas fa-download"></i> Export</h3>
+            <ul>
+                <li><a href="#" id="export-pdf"><i class="fas fa-file-pdf"></i> Exporter en PDF</a></li>
+                <li><a href="#" id="export-html"><i class="fas fa-file-code"></i> Exporter en HTML</a></li>
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <h2><i class="fas fa-edit"></i> Éditeur de cours</h2>
+                    
+                    <div class="form-group">
+                        <label for="course-title">Titre du cours</label>
+                        <input type="text" id="course-title" class="form-control" value="Théorèmes de Pythagore et de Thalès">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="course-description">Description</label>
+                        <textarea id="course-description" class="form-control">Cours complet de mathématiques pour la classe de Seconde</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="chapter-select">Chapitre</label>
+                        <select id="chapter-select" class="form-control">
+                            <option value="situation-probleme">Situation Problème</option>
+                            <option value="prerequis">Prérequis</option>
+                            <option value="activite">Activité</option>
+                            <option value="definitions">Définitions</option>
+                            <option value="pythagore">Théorème de Pythagore</option>
+                            <option value="reciproque-pythagore">Réciproque de Pythagore</option>
+                            <option value="thales">Théorème de Thalès</option>
+                            <option value="reciproque-thales">Réciproque de Thalès</option>
+                            <option value="exercices">Exercices</option>
+                            <option value="resume">Résumé</option>
+                            <option value="devoir-maison">Devoir Maison</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="chapter-title">Titre du chapitre</label>
+                        <input type="text" id="chapter-title" class="form-control" value="Situation Problème">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Type de contenu</label>
+                        <div class="content-type-selector">
+                            <button class="content-type-btn active" data-type="problem-situation">
+                                <i class="fas fa-puzzle-piece"></i> Situation problème
+                            </button>
+                            <button class="content-type-btn" data-type="situation-solution">
+                                <i class="fas fa-lightbulb"></i> Solution situation
+                            </button>
+                            <button class="content-type-btn" data-type="prerequisites">
+                                <i class="fas fa-list-check"></i> Prérequis
+                            </button>
+                            <button class="content-type-btn" data-type="activity">
+                                <i class="fas fa-tasks"></i> Activité
+                            </button>
+                            <button class="content-type-btn" data-type="activity-solution">
+                                <i class="fas fa-check-circle"></i> Solution activité
+                            </button>
+                            <button class="content-type-btn" data-type="exercise">
+                                <i class="fas fa-pencil-alt"></i> Exercice
+                            </button>
+                            <button class="content-type-btn" data-type="exercise-solution">
+                                <i class="fas fa-check-double"></i> Solution exercice
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="chapter-content">Contenu</label>
+                        <div class="rich-text-editor">
+                            <div class="toolbar">
+                                <button id="bold-btn" title="Gras"><i class="fas fa-bold"></i></button>
+                                <button id="italic-btn" title="Italique"><i class="fas fa-italic"></i></button>
+                                <button id="underline-btn" title="Souligné"><i class="fas fa-underline"></i></button>
+                                <button id="strike-btn" title="Barré"><i class="fas fa-strikethrough"></i></button>
+                                <div class="color-btn">
+                                    <button title="Couleur du texte"><i class="fas fa-palette"></i></button>
+                                    <div class="color-options">
+                                        <button class="color-option color-red" data-color="red" title="Rouge"></button>
+                                        <button class="color-option color-blue" data-color="blue" title="Bleu"></button>
+                                        <button class="color-option color-green" data-color="green" title="Vert"></button>
+                                    </div>
+                                </div>
+                                <button id="clear-format" title="Effacer le formatage"><i class="fas fa-eraser"></i></button>
+                            </div>
+                            <div id="editor-content" class="editor-content" contenteditable="true">
+                                Un paysagiste doit créer une allée rectiligne traversant un parc triangulaire. Il souhaite que cette allée soit parallèle à l'un des côtés du parc. Le parc a la forme d'un triangle ABC avec AB = 50 m, AC = 80 m et BC = 100 m.
+
+                                L'allée doit couper les côtés [AB] et [AC] respectivement en M et N tels que AM = 20 m.
+
+                                Comment le paysagiste peut-il déterminer la position exacte du point N sur le côté [AC] pour que l'allée (MN) soit parallèle au côté [BC] ?
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Ajouter des médias</label>
+                        <div class="media-upload" id="media-upload-area">
+                            <i class="fas fa-cloud-upload-alt fa-2x"></i>
+                            <p>Glissez-déposez des fichiers ici ou cliquez pour parcourir</p>
+                            <input type="file" id="media-file-input" multiple style="display: none;">
+                        </div>
+                        
+                        <div class="media-preview" id="media-preview">
+                            <!-- Les médias ajoutés apparaîtront ici -->
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button class="btn btn-primary" id="update-chapter">
+                            <i class="fas fa-sync-alt"></i> Mettre à jour le chapitre
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="preview-panel">
+                    <h2><i class="fas fa-eye"></i> Aperçu du cours</h2>
+                    
+                    <div id="course-preview">
+                        <!-- Contenu généré dynamiquement -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>AppliCours - Créateur de cours interactifs</p>
+            <p>© 2025 - Tous droits réservés</p>
+        </footer>
+    </div>
+
+    <!-- Modal d'exportation -->
+    <div class="export-modal" id="export-modal">
+        <div class="export-modal-content">
+            <h2><i class="fas fa-download"></i> Options d'exportation</h2>
+            
+            <div class="export-options">
+                <div class="export-option">
+                    <input type="checkbox" id="export-title" checked>
+                    <label for="export-title">Inclure le titre du cours</label>
+                </div>
+                
+                <div class="export-option">
+                    <input type="checkbox" id="export-description" checked>
+                    <label for="export-description">Inclure la description</label>
+                </div>
+                
+                <div class="export-option">
+                    <input type="checkbox" id="export-all-chapters" checked>
+                    <label for="export-all-chapters">Exporter tous les chapitres</label>
+                </div>
+                
+                <div class="export-option" id="chapter-selection" style="display: none;">
+                    <label for="export-chapters">Sélectionner les chapitres:</label>
+                    <select id="export-chapters" multiple style="width: 100%; margin-top: 5px;">
+                        <option value="situation-probleme" selected>Situation Problème</option>
+                        <option value="prerequis" selected>Prérequis</option>
+                        <option value="activite" selected>Activité</option>
+                        <option value="definitions" selected>Définitions</option>
+                        <option value="pythagore" selected>Théorème de Pythagore</option>
+                        <option value="reciproque-pythagore" selected>Réciproque de Pythagore</option>
+                        <option value="thales" selected>Théorème de Thalès</option>
+                        <option value="reciproque-thales" selected>Réciproque de Thalès</option>
+                        <option value="exercices" selected>Exercices</option>
+                        <option value="resume" selected>Résumé</option>
+                        <option value="devoir-maison" selected>Devoir Maison</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="export-actions">
+                <button class="btn btn-tertiary" id="cancel-export">Annuler</button>
+                <button class="btn btn-primary" id="confirm-export">Exporter</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fonctionnalités de base
+        document.addEventListener('DOMContentLoaded', function() {
+            // Données du cours
+            let courseData = {
+                title: "Théorèmes de Pythagore et de Thalès",
+                description: "Cours complet de mathématiques pour la classe de Seconde",
+                chapters: {
+                    "situation-probleme": {
+                        title: "Situation Problème",
+                        content: {
+                            "problem-situation": "Un paysagiste doit créer une allée rectiligne traversant un parc triangulaire. Il souhaite que cette allée soit parallèle à l'un des côtés du parc. Le parc a la forme d'un triangle ABC avec AB = 50 m, AC = 80 m et BC = 100 m.\n\nL'allée doit couper les côtés [AB] et [AC] respectivement en M et N tels que AM = 20 m.\n\nComment le paysagiste peut-il déterminer la position exacte du point N sur le côté [AC] pour que l'allée (MN) soit parallèle au côté [BC] ?",
+                            "situation-solution": "Pour résoudre ce problème, le paysagiste peut utiliser le théorème de Thalès qui établit des relations de proportionnalité dans une configuration où des droites sont parallèles.\n\nSi (MN) est parallèle à (BC), alors d'après le théorème de Thalès, on a :\nAM/AB = AN/AC = MN/BC\n\nAvec AB = 50 m, AC = 80 m, AM = 20 m, on peut calculer AN = (AM × AC)/AB = (20 × 80)/50 = 32 m.\n\nAinsi, le point N doit être placé à 32 m du point A sur le côté [AC] pour que (MN) soit parallèle à (BC)."
+                        },
+                        media: []
+                    },
+                    "prerequis": {
+                        title: "Prérequis",
+                        content: {
+                            "prerequisites": "- Connaître les propriétés des triangles\n- Savoir calculer des proportions\n- Maîtriser les opérations de base\n- Connaître les propriétés des droites parallèles"
+                        },
+                        media: []
+                    },
+                    "activite": {
+                        title: "Activité Pédagogique",
+                        content: {
+                            "activity": "En groupe de 3 ou 4, mesurez les dimensions de différents triangles rectangles dans la salle de classe et vérifiez si elles respecten le théorème de Pythagore.\n\nMatériel nécessaire :\n- Ruban à mesurer\n- Rapporteur\n- Calculatrice\n- Feuille de calcul",
+                            "activity-solution": "Solution de l'activité :\n\n1. Mesurez les côtés de plusieurs triangles rectangles\n2. Vérifiez que pour chaque triangle, le carré de l'hypoténuse est égal à la somme des carrés des deux autres côtés\n3. Notez vos observations et tirez une conclusion"
+                        },
+                        media: []
+                    },
+                    "definitions": {
+                        title: "Définitions",
+                        content: {
+                            "definition": "- Triangle rectangle: Un triangle qui possède un angle droit. Le côté opposé à l'angle droit est appelé hypoténuse.\n- Hypoténuse: Dans un triangle rectangle, l'hypoténuse est le côté opposé à l'angle droit. C'est le plus long côté du triangle.\n- Configuration de Thalès: Figure géométrique composée de deux droites sécantes et de deux droites parallèles, permettant d'établir des relations de proportionnalité."
+                        },
+                        media: []
+                    },
+                    "pythagore": {
+                        title: "Théorème de Pythagore",
+                        content: {
+                            "theorem": "Si un triangle est rectangle, alors le carré de la longueur de l'hypoténuse est égal à la somme des carrés des longueurs des deux autres côtés.",
+                            "formula": "Si ABC est un triangle rectangle en A, alors : BC² = AB² + AC²",
+                            "example": "Soit un triangle ABC rectangle en A avec AB = 3 cm et AC = 4 cm.\n\nCalculons BC :\nBC² = AB² + AC² = 3² + 4² = 9 + 16 = 25\nDonc BC = √25 = 5 cm"
+                        },
+                        media: []
+                    },
+                    "reciproque-pythagore": {
+                        title: "Réciproque de Pythagore",
+                        content: {
+                            "theorem": "Si dans un triangle, le carré de la longueur du plus grand côté est égal à la somme des carrés des longueurs des deux autres côtés, alors ce triangle est rectangle.",
+                            "example": "Soit un triangle ABC avec AB = 5 cm, AC = 12 cm et BC = 13 cm.\n\nVérifions s'il est rectangle :\nOn calcule BC² = 13² = 169\nOn calcule AB² + AC² = 5² + 12² = 25 + 144 = 169\n\nComme BC² = AB² + AC², d'après la réciproque du théorème de Pythagore, le triangle ABC est rectangle en A."
+                        },
+                        media: []
+                    },
+                    "thales": {
+                        title: "Théorème de Thalès",
+                        content: {
+                            "theorem": "Soit deux droites sécantes en un point A, et deux points B et M sur l'une, et C et N sur l'autre.\n\nSi les droites (BC) et (MN) sont parallèles, alors les triangles ABC et AMN forment une configuration de Thalès et on a : AB/AM = AC/AN = BC/MN",
+                            "example": "Soit un triangle ABC et une droite parallèle à (BC) qui coupe (AB) en M et (AC) en N.\n\nOn donne : AB = 10 cm, AM = 4 cm, AC = 8 cm.\n\nCalculons AN :\nD'après le théorème de Thalès : AM/AB = AN/AC\nDonc 4/10 = AN/8 ⇒ AN = (4 × 8)/10 = 32/10 = 3,2 cm"
+                        },
+                        media: []
+                    },
+                    "reciproque-thales": {
+                        title: "Réciproque de Thalès",
+                        content: {
+                            "theorem": "Soit deux droites (AB) et (AC) sécantes en A, avec M sur (AB) et N sur (AC).\n\nSi AM/AB = AN/AC et si les points A, B, M d'une part et A, C, N d'autre part sont alignés dans le même ordre, alors les droites (MN) et (BC) sont parallèles.",
+                            "example": "Soit un triangle ABC avec AB = 12 cm, AC = 9 cm.\n\nSur le côté [AB], on place un point M tel que AM = 8 cm.\nSur le côté [AC], on place un point N tel que AN = 6 cm.\n\nLes droites (MN) et (BC) sont-elles parallèles ?\nOn calcule : AM/AB = 8/12 = 2/3 et AN/AC = 6/9 = 2/3\n\nComme AM/AB = AN/AC, d'après la réciproque du théorème de Thalès, les droites (MN) et (BC) sont parallèles."
+                        },
+                        media: []
+                    },
+                    "exercices": {
+                        title: "Exercices d'application",
+                        content: {
+                            "exercise": "Exercice 1 (Pythagore):\nUn triangle ABC a pour dimensions AB = 6 cm, AC = 8 cm et BC = 10 cm.\nCe triangle est-il rectangle ? Si oui, en quel point ?\n\nExercice 2 (Thalès):\nSur la figure ci-dessous, les droites (MN) et (BC) sont parallèles.\nOn donne : AB = 12 cm, AM = 3 cm, AC = 10 cm.\nCalculer AN.\n\nExercice 3 (Problème combiné):\nUn échelle de 5 m est appuyée contre un mur. Le pied de l'échelle est à 2 m du mur.\n1. À quelle hauteur le sommet de l'échelle touche-t-il le mur ?\n2. Si on écarte le pied de l'échelle de 0,5 m supplémentaire, à quelle hauteur montera-t-elle alors ?",
+                            "exercise-solution": "Solution Exercice 1:\nOn calcule :\nBC² = 10² = 100\nAB² + AC² = 6² + 8² = 36 + 64 = 100\nComme BC² = AB² + AC², d'après la réciproque du théorème de Pythagore, le triangle ABC est rectangle en A.\n\nSolution Exercice 2:\nD'après le théorème de Thalès :\nAM/AB = AN/AC\n3/12 = AN/10\nAN = (3 × 10)/12 = 30/12 = 2,5 cm\n\nSolution Exercice 3:\n1. On utilise le théorème de Pythagore :\nHauteur² = 5² - 2² = 25 - 4 = 21\nHauteur = √21 ≈ 4,58 m\n\n2. Nouvelle distance du pied au mur : 2 + 0,5 = 2,5 m\nNouvelle hauteur² = 5² - 2,5² = 25 - 6,25 = 18,75\nNouvelle hauteur = √18,75 ≈ 4,33 m"
+                        },
+                        media: []
+                    },
+                    "resume": {
+                        title: "Résumé et Récapitulatif",
+                        content: {
+                            "summary": "Fiche de synthèse:\n\n- Théorème de Pythagore: Si un triangle est rectangle, alors le carré de l'hypoténuse est égal à la somme des carrés des deux autres côtés.\n- Réciproque de Pythagore: Si dans un triangle, le carré du plus grand côté est égal à la somme des carrés des deux autres côtés, alors ce triangle est rectangle.\n- Théorème de Thalès: Dans une configuration avec des droites parallèles, les rapports des longueurs des segments sont égaux.\n- Réciproque de Thalès: Si les rapports des longueurs des segments sont égaux et si les points sont alignés dans le même ordre, alors les droites sont parallèles.\n\nMéthodologie pour résoudre un problème :\n1. Identifier la configuration (triangle rectangle ou configuration de Thalès)\n2. Énoncer le théorème ou la réciproque applicable\n3. Écrire l'égalité correspondante\n4. Remplacer par les valeurs connues\n5. Résoudre l'équation pour trouver la valeur inconnue\n6. Conclure en interprétant le résultat"
+                        },
+                        media: []
+                    },
+                    "devoir-maison": {
+                        title: "Devoir Maison",
+                        content: {
+                            "homework": "Exercices à rendre:\n\nExercice 1: Un triangle a pour côtés 7 cm, 8 cm et 11 cm. Est-il rectangle ? Justifier.\n\nExercice 2: Dans un triangle ABC, on place M sur [AB] and N sur [AC] tels que AM = 4 cm, AB = 10 cm, AC = 15 cm. Les droites (MN) et (BC) sont parallèles. Calculer AN.\n\nExercice 3: Une tour est observée par deux personnes situées à 50 m l'une de l'autre. La première voit le sommet sous un angle de 45° et la seconde sous un angle de 30°. Calculer la hauteur de la tour.\n\nProblème: Un bateau quitte le port et navigue 8 km vers l'est, puis 6 km vers le nord. Quelle distance le sépare alors du port ? S'il veut revenir directement au port, quelle distance devra-t-il parcourir ?\n\nDate de rendu: 15 novembre 2025\n\nConsignes: Rédigez soigneusement avec toutes les étapes de raisonnement. Les calculs doivent être détaillés."
+                        },
+                        media: []
+                    }
+                }
+            };
+
+            // Éditeur de texte enrichi
+            const editor = document.getElementById('editor-content');
+            const boldBtn = document.getElementById('bold-btn');
+            const italicBtn = document.getElementById('italic-btn');
+            const underlineBtn = document.getElementById('underline-btn');
+            const strikeBtn = document.getElementById('strike-btn');
+            const clearFormatBtn = document.getElementById('clear-format');
+            const colorOptions = document.querySelectorAll('.color-option');
+
+            // Fonctions pour la mise en forme
+            function formatText(command, value = null) {
+                document.execCommand(command, false, value);
+                editor.focus();
+            }
+
+            boldBtn.addEventListener('click', () => formatText('bold'));
+            italicBtn.addEventListener('click', () => formatText('italic'));
+            underlineBtn.addEventListener('click', () => formatText('underline'));
+            strikeBtn.addEventListener('click', () => formatText('strikeThrough'));
+            
+            clearFormatBtn.addEventListener('click', () => {
+                formatText('removeFormat');
+                formatText('unlink');
+            });
+
+            colorOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    const color = option.dataset.color;
+                    formatText('foreColor', color);
+                });
+            });
+
+            // Gestion de l'upload de médias
+            const mediaUploadArea = document.getElementById('media-upload-area');
+            const mediaFileInput = document.getElementById('media-file-input');
+            const mediaPreview = document.getElementById('media-preview');
+            
+            mediaUploadArea.addEventListener('click', function() {
+                mediaFileInput.click();
+            });
+            
+            mediaUploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.style.background = '#e8f4fc';
+            });
+            
+            mediaUploadArea.addEventListener('dragleave', function() {
+                this.style.background = '';
+            });
+            
+            mediaUploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.style.background = '';
+                
+                const files = e.dataTransfer.files;
+                handleMediaFiles(files);
+            });
+            
+            mediaFileInput.addEventListener('change', function() {
+                handleMediaFiles(this.files);
+            });
+            
+            function handleMediaFiles(files) {
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        const mediaItem = document.createElement('div');
+                        mediaItem.className = 'media-item';
+                        
+                        if (file.type.startsWith('image/')) {
+                            mediaItem.innerHTML = `
+                                <img src="${e.target.result}" alt="${file.name}">
+                                <div class="remove-media">&times;</div>
+                            `;
+                        } else if (file.type.startsWith('video/')) {
+                            mediaItem.innerHTML = `
+                                <video controls>
+                                    <source src="${e.target.result}" type="${file.type}">
+                                </video>
+                                <div class="remove-media">&times;</div>
+                            `;
+                        } else if (file.type.startsWith('audio/')) {
+                            mediaItem.innerHTML = `
+                                <audio controls>
+                                    <source src="${e.target.result}" type="${file.type}">
+                                </audio>
+                                <div class="remove-media">&times;</div>
+                            `;
+                        }
+                        
+                        mediaPreview.appendChild(mediaItem);
+                        
+                        // Ajouter l'événement pour supprimer le média
+                        mediaItem.querySelector('.remove-media').addEventListener('click', function() {
+                            mediaItem.remove();
+                        });
+                    };
+                    
+                    reader.readAsDataURL(file);
+                }
+            }
+            
+            // Gestion des types de contenu
+            const contentTypeButtons = document.querySelectorAll('.content-type-btn');
+            let activeContentType = 'problem-situation';
+            
+            contentTypeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    contentTypeButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    activeContentType = this.dataset.type;
+                    
+                    // Charger le contenu correspondant au type sélectionné
+                    const currentChapter = document.getElementById('chapter-select').value;
+                    if (courseData.chapters[currentChapter] && courseData.chapters[currentChapter].content[activeContentType]) {
+                        editor.innerHTML = courseData.chapters[currentChapter].content[activeContentType];
+                    } else {
+                        editor.innerHTML = '';
+                    }
+                });
+            });
+            
+            // Navigation entre les chapitres
+            document.getElementById('chapter-select').addEventListener('change', function() {
+                const chapterId = this.value;
+                loadChapter(chapterId);
+            });
+            
+            // Navigation via la sidebar
+            document.querySelectorAll('#chapters-list a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const chapterId = this.dataset.chapter;
+                    document.getElementById('chapter-select').value = chapterId;
+                    loadChapter(chapterId);
+                });
+            });
+            
+            function loadChapter(chapterId) {
+                const chapter = courseData.chapters[chapterId];
+                if (!chapter) return;
+                
+                document.getElementById('chapter-title').value = chapter.title;
+                
+                // Charger le premier type de contenu disponible
+                const firstContentType = Object.keys(chapter.content)[0];
+                if (firstContentType) {
+                    editor.innerHTML = chapter.content[firstContentType];
+                    
+                    // Activer le bouton correspondant
+                    contentTypeButtons.forEach(btn => {
+                        if (btn.dataset.type === firstContentType) {
+                            btn.classList.add('active');
+                            activeContentType = firstContentType;
+                        } else {
+                            btn.classList.remove('active');
+                        }
+                    });
+                }
+                
+                // Mettre à jour l'aperçu
+                updatePreview();
+            }
+            
+            // Mise à jour de l'aperçu
+            document.getElementById('update-chapter').addEventListener('click', function() {
+                const chapterId = document.getElementById('chapter-select').value;
+                const content = editor.innerHTML;
+                
+                // Sauvegarder le contenu
+                if (!courseData.chapters[chapterId].content) {
+                    courseData.chapters[chapterId].content = {};
+                }
+                courseData.chapters[chapterId].content[activeContentType] = content;
+                
+                updatePreview();
+            });
+            
+            function updatePreview() {
+                const chapterId = document.getElementById('chapter-select').value;
+                const chapter = courseData.chapters[chapterId];
+                const preview = document.getElementById('course-preview');
+                
+                if (!chapter) return;
+                
+                // Déterminer la classe CSS en fonction du type de contenu
+                const contentClasses = {
+                    'problem-situation': 'problem-situation',
+                    'situation-solution': 'situation-solution',
+                    'prerequisites': 'prerequisites',
+                    'activity': 'activity',
+                    'activity-solution': 'activity-solution',
+                    'exercise': 'exercise',
+                    'exercise-solution': 'exercise-solution',
+                    'theorem': 'theorem',
+                    'formula': 'formula',
+                    'example': 'example',
+                    'summary': 'summary',
+                    'homework': 'homework'
+                };
+                
+                const contentIcons = {
+                    'problem-situation': 'puzzle-piece',
+                    'situation-solution': 'lightbulb',
+                    'prerequisites': 'list-check',
+                    'activity': 'tasks',
+                    'activity-solution': 'check-circle',
+                    'exercise': 'pencil-alt',
+                    'exercise-solution': 'check-double',
+                    'theorem': 'graduation-cap',
+                    'formula': 'square-root-alt',
+                    'example': 'lightbulb',
+                    'summary': 'list-alt',
+                    'homework': 'tasks'
+                };
+                
+                const contentTitles = {
+                    'problem-situation': 'Problème pratique',
+                    'situation-solution': 'Solution de la situation problème',
+                    'prerequisites': 'Prérequis',
+                    'activity': 'Activité pédagogique',
+                    'activity-solution': 'Solution de l\'activité',
+                    'exercise': 'Exercice',
+                    'exercise-solution': 'Solution de l\'exercice',
+                    'theorem': 'Énoncé du théorème',
+                    'formula': 'Formule',
+                    'example': 'Exemple',
+                    'summary': 'Fiche de synthèse',
+                    'homework': 'Exercices à rendre'
+                };
+                
+                let previewHTML = `<div class="chapter">
+                    <h2><i class="fas fa-question-circle"></i> ${chapter.title}</h2>
+                    <div class="chapter-content">`;
+                
+                // Ajouter tous les contenus du chapitre
+                for (const [contentType, content] of Object.entries(chapter.content)) {
+                    const contentClass = contentClasses[contentType] || 'problem-situation';
+                    const contentIcon = contentIcons[contentType] || 'puzzle-piece';
+                    const contentTitle = contentTitles[contentType] || 'Contenu';
+                    
+                    if (contentType === 'formula') {
+                        previewHTML += `
+                            <div class="${contentClass}">
+                                ${content.replace(/\n/g, '<br>')}
+                            </div>
+                        `;
+                    } else {
+                        previewHTML += `
+                            <div class="${contentClass}">
+                                <h3><i class="fas fa-${contentIcon}"></i> ${contentTitle}</h3>
+                                ${content}
+                            </div>
+                        `;
+                    }
+                }
+                
+                previewHTML += `</div></div>`;
+                preview.innerHTML = previewHTML;
+            }
+            
+            // Initialiser l'aperçu
+            loadChapter('situation-probleme');
+            
+            // Fonctionnalités des boutons
+            document.getElementById('new-course').addEventListener('click', function() {
+                if (confirm('Créer un nouveau cours ? Les modifications non sauvegardées seront perdues.')) {
+                    document.getElementById('course-title').value = 'Nouveau cours';
+                    document.getElementById('course-description').value = 'Description du cours';
+                    document.getElementById('chapter-title').value = 'Premier chapitre';
+                    editor.innerHTML = 'Contenu du chapitre...';
+                    mediaPreview.innerHTML = '';
+                    document.getElementById('course-preview').innerHTML = '<p>Prévisualisation du cours</p>';
+                }
+            });
+            
+            document.getElementById('save-course').addEventListener('click', function() {
+                alert('Cours sauvegardé avec succès !');
+            });
+            
+            document.getElementById('add-chapter').addEventListener('click', function(e) {
+                e.preventDefault();
+                const chapterName = prompt('Nom du nouveau chapitre :');
+                if (chapterName) {
+                    const chapterId = chapterName.toLowerCase().replace(/\s+/g, '-');
+                    
+                    // Ajouter aux données
+                    courseData.chapters[chapterId] = {
+                        title: chapterName,
+                        content: {},
+                        media: []
+                    };
+                    
+                    // Ajouter au select
+                    const option = document.createElement('option');
+                    option.value = chapterId;
+                    option.textContent = chapterName;
+                    document.getElementById('chapter-select').appendChild(option);
+                    
+                    // Ajouter à la sidebar
+                    const chaptersList = document.getElementById('chapters-list');
+                    const newItem = document.createElement('li');
+                    newItem.innerHTML = `<a href="#" data-chapter="${chapterId}"><i class="fas fa-angle-right"></i> ${chapterName}</a>`;
+                    chaptersList.appendChild(newItem);
+                    
+                    // Ajouter l'événement de clic
+                    newItem.querySelector('a').addEventListener('click', function(e) {
+                        e.preventDefault();
+                        document.getElementById('chapter-select').value = chapterId;
+                        loadChapter(chapterId);
+                    });
+                }
+            });
+            
+            document.getElementById('add-activity').addEventListener('click', function(e) {
+                e.preventDefault();
+                // Activer le type de contenu "Activité"
+                contentTypeButtons.forEach(btn => btn.classList.remove('active'));
+                document.querySelector('[data-type="activity"]').classList.add('active');
+                activeContentType = 'activity';
+                
+                // Initialiser avec un contenu par défaut
+                editor.innerHTML = "Décrivez ici l'activité pédagogique...<br><br><strong>Objectifs :</strong><br>- <br>- <br><br><strong>Matériel nécessaire :</strong><br>- <br>- <br><br><strong>Déroulement :</strong><br>1. <br>2. <br>3. ";
+            });
+            
+            // Gestion de l'exportation
+            const exportModal = document.getElementById('export-modal');
+            const exportPdfBtn = document.getElementById('export-pdf');
+            const exportHtmlBtn = document.getElementById('export-html');
+            const cancelExportBtn = document.getElementById('cancel-export');
+            const confirmExportBtn = document.getElementById('confirm-export');
+            const exportAllChapters = document.getElementById('export-all-chapters');
+            const chapterSelection = document.getElementById('chapter-selection');
+            const exportChapters = document.getElementById('export-chapters');
+            
+            let currentExportType = '';
+            
+            // Toggle pour l'export de tous les chapitres
+            exportAllChapters.addEventListener('change', function() {
+                chapterSelection.style.display = this.checked ? 'none' : 'block';
+            });
+            
+            // Ouvrir le modal d'exportation PDF
+            exportPdfBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                currentExportType = 'pdf';
+                exportModal.style.display = 'flex';
+            });
+            
+            // Ouvrir le modal d'exportation HTML
+            exportHtmlBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                currentExportType = 'html';
+                exportModal.style.display = 'flex';
+            });
+            
+            // Annuler l'exportation
+            cancelExportBtn.addEventListener('click', function() {
+                exportModal.style.display = 'none';
+            });
+            
+            // Confirmer l'exportation
+            confirmExportBtn.addEventListener('click', function() {
+                exportModal.style.display = 'none';
+                
+                const includeTitle = document.getElementById('export-title').checked;
+                const includeDescription = document.getElementById('export-description').checked;
+                const exportAll = document.getElementById('export-all-chapters').checked;
+                
+                let chaptersToExport = [];
+                
+                if (exportAll) {
+                    chaptersToExport = Object.keys(courseData.chapters);
+                } else {
+                    // Récupérer les chapitres sélectionnés
+                    for (let option of exportChapters.options) {
+                        if (option.selected) {
+                            chaptersToExport.push(option.value);
+                        }
+                    }
+                }
+                
+                if (currentExportType === 'pdf') {
+                    exportToPdf(includeTitle, includeDescription, chaptersToExport);
+                } else if (currentExportType === 'html') {
+                    exportToHtml(includeTitle, includeDescription, chaptersToExport);
+                }
+            });
+            
+            // Fonction pour exporter en PDF
+            function exportToPdf(includeTitle, includeDescription, chaptersToExport) {
+                // Créer un conteneur pour le contenu à exporter
+                const content = document.createElement('div');
+                content.style.padding = '20px';
+                content.style.fontFamily = 'Arial, sans-serif';
+                
+                // Ajouter le titre si demandé
+                if (includeTitle) {
+                    const title = document.createElement('h1');
+                    title.textContent = courseData.title;
+                    title.style.textAlign = 'center';
+                    title.style.marginBottom = '20px';
+                    title.style.color = '#2c3e50';
+                    content.appendChild(title);
+                }
+                
+                // Ajouter la description si demandée
+                if (includeDescription && courseData.description) {
+                    const description = document.createElement('p');
+                    description.textContent = courseData.description;
+                    description.style.textAlign = 'center';
+                    description.style.marginBottom = '30px';
+                    description.style.fontStyle = 'italic';
+                    content.appendChild(description);
+                }
+                
+                // Ajouter les chapitres sélectionnés
+                chaptersToExport.forEach(chapterId => {
+                    const chapter = courseData.chapters[chapterId];
+                    if (!chapter) return;
+                    
+                    const chapterElement = document.createElement('div');
+                    chapterElement.style.marginBottom = '30px';
+                    
+                    const chapterTitle = document.createElement('h2');
+                    chapterTitle.textContent = chapter.title;
+                    chapterTitle.style.color = '#2c3e50';
+                    chapterTitle.style.borderBottom = '2px solid #3498db';
+                    chapterTitle.style.paddingBottom = '10px';
+                    chapterTitle.style.marginBottom = '20px';
+                    chapterElement.appendChild(chapterTitle);
+                    
+                    const chapterContent = document.createElement('div');
+                    
+                    // Ajouter tous les contenus du chapitre
+                    for (const [contentType, content] of Object.entries(chapter.content)) {
+                        const contentDiv = document.createElement('div');
+                        contentDiv.style.marginBottom = '15px';
+                        contentDiv.innerHTML = content;
+                        chapterContent.appendChild(contentDiv);
+                    }
+                    
+                    chapterElement.appendChild(chapterContent);
+                    content.appendChild(chapterElement);
+                });
+                
+                // Options pour html2pdf
+                const options = {
+                    margin: 10,
+                    filename: `${courseData.title.replace(/\s+/g, '_')}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+                
+                // Générer le PDF
+                html2pdf().set(options).from(content).save();
+            }
+            
+            // Fonction pour exporter en HTML
+            function exportToHtml(includeTitle, includeDescription, chaptersToExport) {
+                let htmlContent = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${courseData.title}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .description {
+            text-align: center;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+        .chapter {
+            margin-bottom: 40px;
+        }
+        .problem-situation, .situation-solution, .prerequisites, 
+        .activity, .activity-solution, .exercise, .exercise-solution,
+        .theorem, .definition, .summary, .homework {
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 5px solid;
+            border-radius: 0 8px 8px 0;
+        }
+        .problem-situation { background: #ffeaa7; border-color: #fdcb6e; }
+        .situation-solution { background: #d8f8ff; border-color: #81ecec; }
+        .prerequisites { background: #ffeaa7; border-color: #fdcb6e; }
+        .activity { background: #e7f9ed; border-color: #2ecc71; }
+        .activity-solution { background: #f4ecf7; border-color: #9b59b6; }
+        .exercise { background: #fef9e7; border-color: #f1c40f; }
+        .exercise-solution { background: #f4ecf7; border-color: #9b59b6; }
+        .theorem { background: #e8f4fc; border-color: #3498db; }
+        .definition { background: #e8f4fc; border-color: #3498db; }
+        .summary { background: #fdebd0; border-color: #f39c12; }
+        .homework { background: #e8d6ff; border-color: #8e44ad; }
+        .formula {
+            font-family: 'Cambria Math', serif;
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px dashed #3498db;
+        }
+    </style>
+</head>
+<body>
+`;
+                
+                // Ajouter le titre si demandé
+                if (includeTitle) {
+                    htmlContent += `    <h1>${courseData.title}</h1>\n`;
+                }
+                
+                // Ajouter la description si demandée
+                if (includeDescription && courseData.description) {
+                    htmlContent += `    <p class="description">${courseData.description}</p>\n`;
+                }
+                
+                // Ajouter les chapitres sélectionnés
+                chaptersToExport.forEach(chapterId => {
+                    const chapter = courseData.chapters[chapterId];
+                    if (!chapter) return;
+                    
+                    htmlContent += `    <div class="chapter">\n`;
+                    htmlContent += `        <h2>${chapter.title}</h2>\n`;
+                    
+                    // Ajouter tous les contenus du chapitre
+                    for (const [contentType, content] of Object.entries(chapter.content)) {
+                        const contentClass = contentType.replace(/_/g, '-');
+                        htmlContent += `        <div class="${contentClass}">\n`;
+                        htmlContent += `            ${content.replace(/\n/g, '<br>')}\n`;
+                        htmlContent += `        </div>\n`;
+                    }
+                    
+                    htmlContent += `    </div>\n`;
+                });
+                
+                htmlContent += `</body>\n</html>`;
+                
+                // Créer un blob et un lien de téléchargement
+                const blob = new Blob([htmlContent], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${courseData.title.replace(/\s+/g, '_')}.html`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        });
+        
+        function toggleSolution(id) {
+            const solution = document.getElementById(id);
+            if (solution.style.display === 'block') {
+                solution.style.display = 'none';
+            } else {
+                solution.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
