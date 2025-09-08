@@ -1,3 +1,8 @@
+ # Ajout des fonctionnalités demandées
+
+Voici le code complet avec toutes les nouvelles fonctionnalités intégrées :
+
+```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -102,6 +107,24 @@
             background: #8e44ad;
         }
         
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
         .sidebar {
             grid-area: sidebar;
             background: #2c3e50;
@@ -109,6 +132,8 @@
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
         }
         
         .sidebar h3 {
@@ -235,6 +260,28 @@
             background: #e8f4fc;
         }
         
+        .youtube-link {
+            margin: 15px 0;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .youtube-link input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .youtube-link button {
+            padding: 10px 15px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
         .media-preview {
             margin-top: 15px;
             display: flex;
@@ -259,6 +306,21 @@
         .media-item audio {
             width: 100%;
             margin-top: 35px;
+        }
+        
+        .youtube-thumbnail {
+            width: 100%;
+            height: 100%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .youtube-thumbnail i {
+            font-size: 2rem;
+            color: #e74c3c;
         }
         
         .remove-media {
@@ -403,6 +465,14 @@
             border-radius: 0 8px 8px 0;
         }
         
+        .prerequisites-check {
+            background: #ffebcd;
+            border-left: 5px solid #ffa500;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
         .problem-situation {
             background: #ffeaa7;
             border-left: 5px solid #fdcb6e;
@@ -414,6 +484,126 @@
         .situation-solution {
             background: #d8f8ff;
             border-left: 5px solid #81ecec;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .general-objectives {
+            background: #e8f4fc;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .specific-objectives {
+            background: #e8f4fc;
+            border-left: 5px solid #2980b9;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .skills {
+            background: #e8f4fc;
+            border-left: 5px solid #1c6ea4;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .lesson-theme {
+            background: #f4ecf7;
+            border-left: 5px solid #9b59b6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .lesson-title {
+            background: #f4ecf7;
+            border-left: 5px solid #8e44ad;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .vocabulary {
+            background: #e7f9ed;
+            border-left: 5px solid #2ecc71;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .definition {
+            background: #e8f4fc;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .example {
+            background: #e7f9ed;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 5px solid #2ecc71;
+        }
+        
+        .theorem {
+            background: #e8f4fc;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .demonstration {
+            background: #fef9e7;
+            border-left: 5px solid #f1c40f;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .proof {
+            background: #fef9e7;
+            border-left: 5px solid #f39c12;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .property {
+            background: #e8f4fc;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .reciprocal {
+            background: #e8f4fc;
+            border-left: 5px solid #2980b9;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .method-points {
+            background: #fdebd0;
+            border-left: 5px solid #f39c12;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .remark {
+            background: #fef9e7;
+            border-left: 5px solid #f1c40f;
             padding: 15px;
             margin: 15px 0;
             border-radius: 0 8px 8px 0;
@@ -433,49 +623,6 @@
             padding: 15px;
             margin: 15px 0;
             border-radius: 0 8px 8px 0;
-        }
-        
-        .solution-proposal {
-            background: #d8f8ff;
-            border-left: 5px solid #81ecec;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .definition {
-            background: #e8f4fc;
-            border-left: 5px solid #3498db;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .theorem {
-            background: #e8f4fc;
-            border-left: 5px solid #3498db;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .formula {
-            font-family: 'Cambria Math', serif;
-            text-align: center;
-            font-size: 1.2rem;
-            margin: 15px 0;
-            padding: 15px;
-            background: #f9f9f9;
-            border-radius: 8px;
-            border: 1px dashed #3498db;
-        }
-        
-        .example {
-            background: #e7f9ed;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-            border-left: 5px solid #2ecc71;
         }
         
         .exercise {
@@ -532,6 +679,17 @@
             padding: 20px;
             margin: 20px 0;
             border-left: 5px solid #8e44ad;
+        }
+        
+        .formula {
+            font-family: 'Cambria Math', serif;
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px dashed #3498db;
         }
         
         .geometry-demo {
@@ -654,8 +812,71 @@
             margin-top: 20px;
         }
         
+        /* Modal YouTube */
+        .youtube-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .youtube-modal-content {
+            width: 80%;
+            max-width: 800px;
+            background: #000;
+            position: relative;
+        }
+        
+        .youtube-modal iframe {
+            width: 100%;
+            height: 450px;
+            border: none;
+        }
+        
+        .close-youtube {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        
+        /* Informations de l'enseignant */
+        .teacher-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .teacher-info h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
         @media (max-width: 1100px) {
             .editor-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -711,6 +932,15 @@
                 <button class="btn btn-secondary" id="save-course">
                     <i class="fas fa-save"></i> Sauvegarder
                 </button>
+                <button class="btn btn-warning" id="load-course">
+                    <i class="fas fa-folder-open"></i> Charger
+                </button>
+                <button class="btn btn-tertiary" id="export-json">
+                    <i class="fas fa-file-export"></i> Exporter JSON
+                </button>
+                <button class="btn btn-tertiary" id="import-json">
+                    <i class="fas fa-file-import"></i> Importer JSON
+                </button>
             </div>
         </header>
         
@@ -721,10 +951,10 @@
                 <li><a href="#" data-chapter="prerequis"><i class="fas fa-angle-right"></i> Prérequis</a></li>
                 <li><a href="#" data-chapter="activite"><i class="fas fa-angle-right"></i> Activité</a></li>
                 <li><a href="#" data-chapter="definitions"><i class="fas fa-angle-right"></i> Définitions</a></li>
-                <li><a href="#" data-chapter="théorème1"><i class="fas fa-angle-right"></i> Théorème1</a></li>
-                <li><a href="#" data-chapter="reciproque-théorème1"><i class="fas fa-angle-right"></i> Réciproque de Theoreme1</a></li>
-                <li><a href="#" data-chapter="théorème2"><i class="fas fa-angle-right"></i> Théorème2 </a></li>
-                <li><a href="#" data-chapter="reciproque-théorème2"><i class="fas fa-angle-right"></i> Réciproque Théorème2</a></li>
+                <li><a href="#" data-chapter="pythagore"><i class="fas fa-angle-right"></i> Théorème de Pythagore</a></li>
+                <li><a href="#" data-chapter="reciproque-pythagore"><i class="fas fa-angle-right"></i> Réciproque de Pythagore</a></li>
+                <li><a href="#" data-chapter="thales"><i class="fas fa-angle-right"></i> Théorème de Thalès</a></li>
+                <li><a href="#" data-chapter="reciproque-thales"><i class="fas fa-angle-right"></i> Réciproque de Thalès</a></li>
                 <li><a href="#" data-chapter="exercices"><i class="fas fa-angle-right"></i> Exercices</a></li>
                 <li><a href="#" data-chapter="resume"><i class="fas fa-angle-right"></i> Résumé</a></li>
                 <li><a href="#" data-chapter="devoir-maison"><i class="fas fa-angle-right"></i> Devoir Maison</a></li>
@@ -733,7 +963,27 @@
             <h3><i class="fas fa-cog"></i> Outils</h3>
             <ul>
                 <li><a href="#" id="add-chapter"><i class="fas fa-plus-circle"></i> Ajouter un chapitre</a></li>
-                <li><a href="#" id="add-exercise"><i class="fas fa-plus-circle"></i> Ajouter un exercice</a></li>
+                <li><a href="#" id="add-prerequisites"><i class="fas fa-list-check"></i> Ajouter des prérequis</a></li>
+                <li><a href="#" id="add-prerequisites-check"><i class="fas fa-check-double"></i> Vérification des prérequis</a></li>
+                <li><a href="#" id="add-problem-situation"><i class="fas fa-puzzle-piece"></i> Situation problème</a></li>
+                <li><a href="#" id="add-solution-situation"><i class="fas fa-lightbulb"></i> Solution situation problème</a></li>
+                <li><a href="#" id="add-general-objectives"><i class="fas fa-bullseye"></i> Objectifs généraux</a></li>
+                <li><a href="#" id="add-specific-objectives"><i class="fas fa-bullseye"></i> Objectifs spécifiques</a></li>
+                <li><a href="#" id="add-skills"><i class="fas fa-graduation-cap"></i> Compétences</a></li>
+                <li><a href="#" id="add-lesson-theme"><i class="fas fa-palette"></i> Thème de la leçon</a></li>
+                <li><a href="#" id="add-lesson-title"><i class="fas fa-heading"></i> Titre de la leçon</a></li>
+                <li><a href="#" id="add-vocabulary"><i class="fas fa-book"></i> Vocabulaire</a></li>
+                <li><a href="#" id="add-definition"><i class="fas fa-book-open"></i> Définition</a></li>
+                <li><a href="#" id="add-example"><i class="fas fa-lightbulb"></i> Exemple</a></li>
+                <li><a href="#" id="add-theorem"><i class="fas fa-square-root-alt"></i> Théorème</a></li>
+                <li><a href="#" id="add-demonstration"><i class="fas fa-chalkboard-teacher"></i> Démonstration</a></li>
+                <li><a href="#" id="add-proof"><i class="fas fa-tasks"></i> Preuve</a></li>
+                <li><a href="#" id="add-property"><i class="fas fa-shapes"></i> Propriété</a></li>
+                <li><a href="#" id="add-reciprocal"><i class="fas fa-exchange-alt"></i> Réciproque de propriété</a></li>
+                <li><a href="#" id="add-method-points"><i class="fas fa-clipboard-list"></i> Points méthode</a></li>
+                <li><a href="#" id="add-remark"><i class="fas fa-comment"></i> Remarque</a></li>
+                <li><a href="#" id="add-application-exercise"><i class="fas fa-pencil-alt"></i> Exercice d'application</a></li>
+                <li><a href="#" id="add-exercise-solution"><i class="fas fa-check-double"></i> Solution exercice</a></li>
                 <li><a href="#" id="add-activity"><i class="fas fa-plus-circle"></i> Ajouter une activité</a></li>
                 <li><a href="#" id="add-media"><i class="fas fa-plus-circle"></i> Ajouter un média</a></li>
             </ul>
@@ -746,6 +996,52 @@
         </div>
         
         <div class="main-content">
+            <div class="teacher-info">
+                <h3><i class="fas fa-user-graduate"></i> Informations de l'enseignant</h3>
+                <div class="info-grid">
+                    <div class="form-group">
+                        <label for="school-name">Nom de l'établissement</label>
+                        <input type="text" id="school-name" class="form-control" value="Lycée Moderne">
+                    </div>
+                    <div class="form-group">
+                        <label for="inspection">Inspection (IESG)</label>
+                        <input type="text" id="inspection" class="form-control" value="IESG Abidjan">
+                    </div>
+                    <div class="form-group">
+                        <label for="dre">Direction Régionale (DRE)</label>
+                        <input type="text" id="dre" class="form-control" value="DRE Abidjan">
+                    </div>
+                    <div class="form-group">
+                        <label for="teacher-name">Nom de l'enseignant</label>
+                        <input type="text" id="teacher-name" class="form-control" value="M. Koné Abdoul">
+                    </div>
+                    <div class="form-group">
+                        <label for="school-year">Année scolaire</label>
+                        <input type="text" id="school-year" class="form-control" value="2024-2025">
+                    </div>
+                    <div class="form-group">
+                        <label for="class">Classe</label>
+                        <input type="text" id="class" class="form-control" value="Seconde C">
+                    </div>
+                    <div class="form-group">
+                        <label for="boys-count">Effectif garçons</label>
+                        <input type="number" id="boys-count" class="form-control" value="25">
+                    </div>
+                    <div class="form-group">
+                        <label for="girls-count">Effectif filles</label>
+                        <input type="number" id="girls-count" class="form-control" value="20">
+                    </div>
+                    <div class="form-group">
+                        <label for="teacher-phone">Contact WhatsApp</label>
+                        <input type="text" id="teacher-phone" class="form-control" value="+225 07 08 09 10 11">
+                    </div>
+                    <div class="form-group">
+                        <label for="teacher-email">Adresse email</label>
+                        <input type="email" id="teacher-email" class="form-control" value="kone.abdoul@lyceemoderne.ci">
+                    </div>
+                </div>
+            </div>
+            
             <div class="editor-container">
                 <div class="editor-panel">
                     <h2><i class="fas fa-edit"></i> Éditeur de cours</h2>
@@ -767,10 +1063,10 @@
                             <option value="prerequis">Prérequis</option>
                             <option value="activite">Activité</option>
                             <option value="definitions">Définitions</option>
-                            <option value="théorème1">Théorème1</option>
-                            <option value="reciproque-théorème1">Réciproque Théorème1</option>
-                            <option value="théorème2">Théorème2</option>
-                            <option value="reciproque-théorème2">Réciproque Théorème2</option>
+                            <option value="pythagore">Théorème de Pythagore</option>
+                            <option value="reciproque-pythagore">Réciproque de Pythagore</option>
+                            <option value="thales">Théorème de Thalès</option>
+                            <option value="reciproque-thales">Réciproque de Thalès</option>
                             <option value="exercices">Exercices</option>
                             <option value="resume">Résumé</option>
                             <option value="devoir-maison">Devoir Maison</option>
@@ -793,6 +1089,54 @@
                             </button>
                             <button class="content-type-btn" data-type="prerequisites">
                                 <i class="fas fa-list-check"></i> Prérequis
+                            </button>
+                            <button class="content-type-btn" data-type="prerequisites-check">
+                                <i class="fas fa-check-double"></i> Vérif. prérequis
+                            </button>
+                            <button class="content-type-btn" data-type="general-objectives">
+                                <i class="fas fa-bullseye"></i> Objectifs généraux
+                            </button>
+                            <button class="content-type-btn" data-type="specific-objectives">
+                                <i class="fas fa-bullseye"></i> Objectifs spécifiques
+                            </button>
+                            <button class="content-type-btn" data-type="skills">
+                                <i class="fas fa-graduation-cap"></i> Compétences
+                            </button>
+                            <button class="content-type-btn" data-type="lesson-theme">
+                                <i class="fas fa-palette"></i> Thème leçon
+                            </button>
+                            <button class="content-type-btn" data-type="lesson-title">
+                                <i class="fas fa-heading"></i> Titre leçon
+                            </button>
+                            <button class="content-type-btn" data-type="vocabulary">
+                                <i class="fas fa-book"></i> Vocabulaire
+                            </button>
+                            <button class="content-type-btn" data-type="definition">
+                                <i class="fas fa-book-open"></i> Définition
+                            </button>
+                            <button class="content-type-btn" data-type="example">
+                                <i class="fas fa-lightbulb"></i> Exemple
+                            </button>
+                            <button class="content-type-btn" data-type="theorem">
+                                <i class="fas fa-square-root-alt"></i> Théorème
+                            </button>
+                            <button class="content-type-btn" data-type="demonstration">
+                                <i class="fas fa-chalkboard-teacher"></i> Démonstration
+                            </button>
+                            <button class="content-type-btn" data-type="proof">
+                                <i class="fas fa-tasks"></i> Preuve
+                            </button>
+                            <button class="content-type-btn" data-type="property">
+                                <i class="fas fa-shapes"></i> Propriété
+                            </button>
+                            <button class="content-type-btn" data-type="reciprocal">
+                                <i class="fas fa-exchange-alt"></i> Réciproque
+                            </button>
+                            <button class="content-type-btn" data-type="method-points">
+                                <i class="fas fa-clipboard-list"></i> Points méthode
+                            </button>
+                            <button class="content-type-btn" data-type="remark">
+                                <i class="fas fa-comment"></i> Remarque
                             </button>
                             <button class="content-type-btn" data-type="activity">
                                 <i class="fas fa-tasks"></i> Activité
@@ -839,6 +1183,11 @@
                     
                     <div class="form-group">
                         <label>Ajouter des médias</label>
+                        <div class="youtube-link">
+                            <input type="text" id="youtube-url" placeholder="Coller le lien YouTube ici" class="form-control">
+                            <button id="add-youtube"><i class="fab fa-youtube"></i> Ajouter</button>
+                        </div>
+                        
                         <div class="media-upload" id="media-upload-area">
                             <i class="fas fa-cloud-upload-alt fa-2x"></i>
                             <p>Glissez-déposez des fichiers ici ou cliquez pour parcourir</p>
@@ -869,7 +1218,7 @@
         
         <footer>
             <p>AppliCours - Créateur de cours interactifs</p>
-            <p>© EDS-2025 - Tous droits réservés</p>
+            <p>© 2025 - Tous droits réservés</p>
         </footer>
     </div>
 
@@ -901,10 +1250,10 @@
                         <option value="prerequis" selected>Prérequis</option>
                         <option value="activite" selected>Activité</option>
                         <option value="definitions" selected>Définitions</option>
-                        <option value="théorème1" selected>Théorème1</option> 
-                        <option value="reciproque-théorème1" selected>Réciproque Théorème1</option>
-                        <option value="théorème2" selected>Théorème2</option>
-                        <option value="reciproque-théorème2" selected>Réciproque Théorème2</option>
+                        <option value="pythagore" selected>Théorème de Pythagore</option>
+                        <option value="reciproque-pythagore" selected>Réciproque de Pythagore</option>
+                        <option value="thales" selected>Théorème de Thalès</option>
+                        <option value="reciproque-thales" selected>Réciproque de Thalès</option>
                         <option value="exercices" selected>Exercices</option>
                         <option value="resume" selected>Résumé</option>
                         <option value="devoir-maison" selected>Devoir Maison</option>
@@ -919,6 +1268,14 @@
         </div>
     </div>
 
+    <!-- Modal YouTube -->
+    <div class="youtube-modal" id="youtube-modal">
+        <div class="youtube-modal-content">
+            <span class="close-youtube" id="close-youtube">&times;</span>
+            <iframe id="youtube-player" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+
     <script>
         // Fonctionnalités de base
         document.addEventListener('DOMContentLoaded', function() {
@@ -926,6 +1283,18 @@
             let courseData = {
                 title: "Théorèmes de Pythagore et de Thalès",
                 description: "Cours complet de mathématiques pour la classe de Seconde",
+                teacherInfo: {
+                    schoolName: "Lycée Moderne",
+                    inspection: "IESG Abidjan",
+                    dre: "DRE Abidjan",
+                    teacherName: "M. Koné Abdoul",
+                    schoolYear: "2024-2025",
+                    class: "Seconde C",
+                    boysCount: 25,
+                    girlsCount: 20,
+                    teacherPhone: "+225 07 08 09 10 11",
+                    teacherEmail: "kone.abdoul@lyceemoderne.ci"
+                },
                 chapters: {
                     "situation-probleme": {
                         title: "Situation Problème",
@@ -958,7 +1327,7 @@
                         media: []
                     },
                     "pythagore": {
-                        title: "Théorème1",
+                        title: "Théorème de Pythagore",
                         content: {
                             "theorem": "Si un triangle est rectangle, alors le carré de la longueur de l'hypoténuse est égal à la somme des carrés des longueurs des deux autres côtés.",
                             "formula": "Si ABC est un triangle rectangle en A, alors : BC² = AB² + AC²",
@@ -966,8 +1335,8 @@
                         },
                         media: []
                     },
-                    "reciproque-théorème1": {
-                        title: "Réciproque Théorème1",
+                    "reciproque-pythagore": {
+                        title: "Réciproque de Pythagore",
                         content: {
                             "theorem": "Si dans un triangle, le carré de la longueur du plus grand côté est égal à la somme des carrés des longueurs des deux autres côtés, alors ce triangle est rectangle.",
                             "example": "Soit un triangle ABC avec AB = 5 cm, AC = 12 cm et BC = 13 cm.\n\nVérifions s'il est rectangle :\nOn calcule BC² = 13² = 169\nOn calcule AB² + AC² = 5² + 12² = 25 + 144 = 169\n\nComme BC² = AB² + AC², d'après la réciproque du théorème de Pythagore, le triangle ABC est rectangle en A."
@@ -975,15 +1344,15 @@
                         media: []
                     },
                     "thales": {
-                        title:  "Théorème2"
+                        title: "Théorème de Thalès",
                         content: {
-                            "theorem": "Soit deux droites sécantes en un point A, et deux points B et M sur l'une, et C et N sur l'autre.\n\nSi les droites (BC) et (MN) sont parallèles, alors les triangles ABC et AMN forment une configuration de Thalès et on a : AB/AM = AC/AN = BC/MN",
+                            "theorem": "Soit deux droites sécantes en un point A, et deux points B et M sur l'une, et C et N sur l'autre.\n\nSi les droites (BC) et (MN) sont parallèles, alors les triangles ABC et AMN formen une configuration de Thalès et on a : AB/AM = AC/AN = BC/MN",
                             "example": "Soit un triangle ABC et une droite parallèle à (BC) qui coupe (AB) en M et (AC) en N.\n\nOn donne : AB = 10 cm, AM = 4 cm, AC = 8 cm.\n\nCalculons AN :\nD'après le théorème de Thalès : AM/AB = AN/AC\nDonc 4/10 = AN/8 ⇒ AN = (4 × 8)/10 = 32/10 = 3,2 cm"
                         },
                         media: []
                     },
                     "reciproque-thales": {
-                        title: "Réciproque Théorème2",
+                        title: "Réciproque de Thalès",
                         content: {
                             "theorem": "Soit deux droites (AB) et (AC) sécantes en A, avec M sur (AB) et N sur (AC).\n\nSi AM/AB = AN/AC et si les points A, B, M d'une part et A, C, N d'autre part sont alignés dans le même ordre, alors les droites (MN) et (BC) sont parallèles.",
                             "example": "Soit un triangle ABC avec AB = 12 cm, AC = 9 cm.\n\nSur le côté [AB], on place un point M tel que AM = 8 cm.\nSur le côté [AC], on place un point N tel que AN = 6 cm.\n\nLes droites (MN) et (BC) sont-elles parallèles ?\nOn calcule : AM/AB = 8/12 = 2/3 et AN/AC = 6/9 = 2/3\n\nComme AM/AB = AN/AC, d'après la réciproque du théorème de Thalès, les droites (MN) et (BC) sont parallèles."
@@ -1014,6 +1383,34 @@
                     }
                 }
             };
+
+            // Charger les informations de l'enseignant
+            function loadTeacherInfo() {
+                document.getElementById('school-name').value = courseData.teacherInfo.schoolName;
+                document.getElementById('inspection').value = courseData.teacherInfo.inspection;
+                document.getElementById('dre').value = courseData.teacherInfo.dre;
+                document.getElementById('teacher-name').value = courseData.teacherInfo.teacherName;
+                document.getElementById('school-year').value = courseData.teacherInfo.schoolYear;
+                document.getElementById('class').value = courseData.teacherInfo.class;
+                document.getElementById('boys-count').value = courseData.teacherInfo.boysCount;
+                document.getElementById('girls-count').value = courseData.teacherInfo.girlsCount;
+                document.getElementById('teacher-phone').value = courseData.teacherInfo.teacherPhone;
+                document.getElementById('teacher-email').value = courseData.teacherInfo.teacherEmail;
+            }
+
+            // Sauvegarder les informations de l'enseignant
+            function saveTeacherInfo() {
+                courseData.teacherInfo.schoolName = document.getElementById('school-name').value;
+                courseData.teacherInfo.inspection = document.getElementById('inspection').value;
+                courseData.teacherInfo.dre = document.getElementById('dre').value;
+                courseData.teacherInfo.teacherName = document.getElementById('teacher-name').value;
+                courseData.teacherInfo.schoolYear = document.getElementById('school-year').value;
+                courseData.teacherInfo.class = document.getElementById('class').value;
+                courseData.teacherInfo.boysCount = parseInt(document.getElementById('boys-count').value);
+                courseData.teacherInfo.girlsCount = parseInt(document.getElementById('girls-count').value);
+                courseData.teacherInfo.teacherPhone = document.getElementById('teacher-phone').value;
+                courseData.teacherInfo.teacherEmail = document.getElementById('teacher-email').value;
+            }
 
             // Éditeur de texte enrichi
             const editor = document.getElementById('editor-content');
@@ -1051,6 +1448,8 @@
             const mediaUploadArea = document.getElementById('media-upload-area');
             const mediaFileInput = document.getElementById('media-file-input');
             const mediaPreview = document.getElementById('media-preview');
+            const youtubeUrlInput = document.getElementById('youtube-url');
+            const addYoutubeBtn = document.getElementById('add-youtube');
             
             mediaUploadArea.addEventListener('click', function() {
                 mediaFileInput.click();
@@ -1075,6 +1474,15 @@
             
             mediaFileInput.addEventListener('change', function() {
                 handleMediaFiles(this.files);
+            });
+            
+            // Ajouter une vidéo YouTube
+            addYoutubeBtn.addEventListener('click', function() {
+                const youtubeUrl = youtubeUrlInput.value.trim();
+                if (youtubeUrl) {
+                    addYoutubeVideo(youtubeUrl);
+                    youtubeUrlInput.value = '';
+                }
             });
             
             function handleMediaFiles(files) {
@@ -1118,6 +1526,66 @@
                     reader.readAsDataURL(file);
                 }
             }
+            
+            function addYoutubeVideo(url) {
+                // Extraire l'ID de la vidéo YouTube
+                const videoId = extractYoutubeId(url);
+                if (!videoId) {
+                    alert("URL YouTube invalide");
+                    return;
+                }
+                
+                const mediaItem = document.createElement('div');
+                mediaItem.className = 'media-item';
+                mediaItem.innerHTML = `
+                    <div class="youtube-thumbnail" data-video-id="${videoId}">
+                        <i class="fab fa-youtube"></i>
+                        <div class="remove-media">&times;</div>
+                    </div>
+                `;
+                
+                mediaPreview.appendChild(mediaItem);
+                
+                // Ajouter l'événement pour ouvrir la vidéo en plein écran
+                mediaItem.querySelector('.youtube-thumbnail').addEventListener('click', function() {
+                    const videoId = this.dataset.videoId;
+                    openYoutubeModal(videoId);
+                });
+                
+                // Ajouter l'événement pour supprimer le média
+                mediaItem.querySelector('.remove-media').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    mediaItem.remove();
+                });
+            }
+            
+            function extractYoutubeId(url) {
+                const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+                const match = url.match(regExp);
+                return (match && match[7].length === 11) ? match[7] : false;
+            }
+            
+            // Modal YouTube
+            const youtubeModal = document.getElementById('youtube-modal');
+            const youtubePlayer = document.getElementById('youtube-player');
+            const closeYoutubeBtn = document.getElementById('close-youtube');
+            
+            function openYoutubeModal(videoId) {
+                youtubePlayer.src = `https://www.youtube.com/embed/${videoId}`;
+                youtubeModal.style.display = 'flex';
+            }
+            
+            closeYoutubeBtn.addEventListener('click', function() {
+                youtubeModal.style.display = 'none';
+                youtubePlayer.src = '';
+            });
+            
+            youtubeModal.addEventListener('click', function(e) {
+                if (e.target === youtubeModal) {
+                    youtubeModal.style.display = 'none';
+                    youtubePlayer.src = '';
+                }
+            });
             
             // Gestion des types de contenu
             const contentTypeButtons = document.querySelectorAll('.content-type-btn');
@@ -1207,6 +1675,21 @@
                     'problem-situation': 'problem-situation',
                     'situation-solution': 'situation-solution',
                     'prerequisites': 'prerequisites',
+                    'prerequisites-check': 'prerequisites-check',
+                    'general-objectives': 'general-objectives',
+                    'specific-objectives': 'specific-objectives',
+                    'skills': 'skills',
+                    'lesson-theme': 'lesson-theme',
+                    'lesson-title': 'lesson-title',
+                    'vocabulary': 'vocabulary',
+                    'definition': 'definition',
+                    'theorem': 'theorem',
+                    'demonstration': 'demonstration',
+                    'proof': 'proof',
+                    'property': 'property',
+                    'reciprocal': 'reciprocal',
+                    'method-points': 'method-points',
+                    'remark': 'remark',
                     'activity': 'activity',
                     'activity-solution': 'activity-solution',
                     'exercise': 'exercise',
@@ -1222,6 +1705,22 @@
                     'problem-situation': 'puzzle-piece',
                     'situation-solution': 'lightbulb',
                     'prerequisites': 'list-check',
+                    'prerequisites-check': 'check-double',
+                    'general-objectives': 'bullseye',
+                    'specific-objectives': 'bullseye',
+                    'skills': 'graduation-cap',
+                    'lesson-theme': 'palette',
+                    'lesson-title': 'heading',
+                    'vocabulary': 'book',
+                    'definition': 'book-open',
+                    'example': 'lightbulb',
+                    'theorem': 'square-root-alt',
+                    'demonstration': 'chalkboard-teacher',
+                    'proof': 'tasks',
+                    'property': 'shapes',
+                    'reciprocal': 'exchange-alt',
+                    'method-points': 'clipboard-list',
+                    'remark': 'comment',
                     'activity': 'tasks',
                     'activity-solution': 'check-circle',
                     'exercise': 'pencil-alt',
@@ -1237,6 +1736,22 @@
                     'problem-situation': 'Problème pratique',
                     'situation-solution': 'Solution de la situation problème',
                     'prerequisites': 'Prérequis',
+                    'prerequisites-check': 'Vérification des prérequis',
+                    'general-objectives': 'Objectifs généraux',
+                    'specific-objectives': 'Objectifs spécifiques',
+                    'skills': 'Compétences visées',
+                    'lesson-theme': 'Thème de la leçon',
+                    'lesson-title': 'Titre de la leçon',
+                    'vocabulary': 'Vocabulaire',
+                    'definition': 'Définition',
+                    'example': 'Exemple',
+                    'theorem': 'Énoncé du théorème',
+                    'demonstration': 'Démonstration',
+                    'proof': 'Preuve',
+                    'property': 'Propriété',
+                    'reciprocal': 'Réciproque de propriété',
+                    'method-points': 'Points méthode',
+                    'remark': 'Remarque',
                     'activity': 'Activité pédagogique',
                     'activity-solution': 'Solution de l\'activité',
                     'exercise': 'Exercice',
@@ -1280,6 +1795,7 @@
             
             // Initialiser l'aperçu
             loadChapter('situation-probleme');
+            loadTeacherInfo();
             
             // Fonctionnalités des boutons
             document.getElementById('new-course').addEventListener('click', function() {
@@ -1290,11 +1806,197 @@
                     editor.innerHTML = 'Contenu du chapitre...';
                     mediaPreview.innerHTML = '';
                     document.getElementById('course-preview').innerHTML = '<p>Prévisualisation du cours</p>';
+                    
+                    // Réinitialiser les données
+                    courseData = {
+                        title: "Nouveau cours",
+                        description: "Description du cours",
+                        teacherInfo: {
+                            schoolName: "",
+                            inspection: "",
+                            dre: "",
+                            teacherName: "",
+                            schoolYear: "",
+                            class: "",
+                            boysCount: 0,
+                            girlsCount: 0,
+                            teacherPhone: "",
+                            teacherEmail: ""
+                        },
+                        chapters: {
+                            "premier-chapitre": {
+                                title: "Premier chapitre",
+                                content: {},
+                                media: []
+                            }
+                        }
+                    };
+                    
+                    // Mettre à jour le sélecteur de chapitres
+                    const chapterSelect = document.getElementById('chapter-select');
+                    chapterSelect.innerHTML = '<option value="premier-chapitre">Premier chapitre</option>';
+                    
+                    // Mettre à jour la liste des chapitres dans la sidebar
+                    const chaptersList = document.getElementById('chapters-list');
+                    chaptersList.innerHTML = '<li><a href="#" data-chapter="premier-chapitre"><i class="fas fa-angle-right"></i> Premier chapitre</a></li>';
+                    
+                    // Ajouter l'événement de clic
+                    chaptersList.querySelector('a').addEventListener('click', function(e) {
+                        e.preventDefault();
+                        document.getElementById('chapter-select').value = 'premier-chapitre';
+                        loadChapter('premier-chapitre');
+                    });
+                    
+                    loadTeacherInfo();
                 }
             });
             
             document.getElementById('save-course').addEventListener('click', function() {
+                saveTeacherInfo();
+                courseData.title = document.getElementById('course-title').value;
+                courseData.description = document.getElementById('course-description').value;
+                
+                // Sauvegarder dans le stockage local
+                localStorage.setItem('savedCourse', JSON.stringify(courseData));
                 alert('Cours sauvegardé avec succès !');
+            });
+            
+            document.getElementById('load-course').addEventListener('click', function() {
+                const savedCourse = localStorage.getItem('savedCourse');
+                if (savedCourse) {
+                    if (confirm('Charger le cours sauvegardé ? Les modifications non sauvegardées seront perdues.')) {
+                        courseData = JSON.parse(savedCourse);
+                        
+                        // Mettre à jour l'interface
+                        document.getElementById('course-title').value = courseData.title;
+                        document.getElementById('course-description').value = courseData.description;
+                        loadTeacherInfo();
+                        
+                        // Mettre à jour le sélecteur de chapitres
+                        const chapterSelect = document.getElementById('chapter-select');
+                        chapterSelect.innerHTML = '';
+                        
+                        // Mettre à jour la liste des chapitres dans la sidebar
+                        const chaptersList = document.getElementById('chapters-list');
+                        chaptersList.innerHTML = '';
+                        
+                        for (const [chapterId, chapter] of Object.entries(courseData.chapters)) {
+                            // Ajouter au select
+                            const option = document.createElement('option');
+                            option.value = chapterId;
+                            option.textContent = chapter.title;
+                            chapterSelect.appendChild(option);
+                            
+                            // Ajouter à la sidebar
+                            const newItem = document.createElement('li');
+                            newItem.innerHTML = `<a href="#" data-chapter="${chapterId}"><i class="fas fa-angle-right"></i> ${chapter.title}</a>`;
+                            chaptersList.appendChild(newItem);
+                            
+                            // Ajouter l'événement de clic
+                            newItem.querySelector('a').addEventListener('click', function(e) {
+                                e.preventDefault();
+                                document.getElementById('chapter-select').value = chapterId;
+                                loadChapter(chapterId);
+                            });
+                        }
+                        
+                        // Charger le premier chapitre
+                        const firstChapterId = Object.keys(courseData.chapters)[0];
+                        if (firstChapterId) {
+                            chapterSelect.value = firstChapterId;
+                            loadChapter(firstChapterId);
+                        }
+                        
+                        alert('Cours chargé avec succès !');
+                    }
+                } else {
+                    alert('Aucun cours sauvegardé trouvé.');
+                }
+            });
+            
+            document.getElementById('export-json').addEventListener('click', function() {
+                saveTeacherInfo();
+                courseData.title = document.getElementById('course-title').value;
+                courseData.description = document.getElementById('course-description').value;
+                
+                const dataStr = JSON.stringify(courseData, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                
+                const exportFileDefaultName = courseData.title.replace(/\s+/g, '_') + '.json';
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+            });
+            
+            document.getElementById('import-json').addEventListener('click', function() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                
+                input.onchange = e => {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        try {
+                            const importedData = JSON.parse(e.target.result);
+                            
+                            if (confirm('Importer ce cours ? Les modifications non sauvegardées seront perdues.')) {
+                                courseData = importedData;
+                                
+                                // Mettre à jour l'interface
+                                document.getElementById('course-title').value = courseData.title;
+                                document.getElementById('course-description').value = courseData.description;
+                                loadTeacherInfo();
+                                
+                                // Mettre à jour le sélecteur de chapitres
+                                const chapterSelect = document.getElementById('chapter-select');
+                                chapterSelect.innerHTML = '';
+                                
+                                // Mettre à jour la liste des chapitres dans la sidebar
+                                const chaptersList = document.getElementById('chapters-list');
+                                chaptersList.innerHTML = '';
+                                
+                                for (const [chapterId, chapter] of Object.entries(courseData.chapters)) {
+                                    // Ajouter au select
+                                    const option = document.createElement('option');
+                                    option.value = chapterId;
+                                    option.textContent = chapter.title;
+                                    chapterSelect.appendChild(option);
+                                    
+                                    // Ajouter à la sidebar
+                                    const newItem = document.createElement('li');
+                                    newItem.innerHTML = `<a href="#" data-chapter="${chapterId}"><i class="fas fa-angle-right"></i> ${chapter.title}</a>`;
+                                    chaptersList.appendChild(newItem);
+                                    
+                                    // Ajouter l'événement de clic
+                                    newItem.querySelector('a').addEventListener('click', function(e) {
+                                        e.preventDefault();
+                                        document.getElementById('chapter-select').value = chapterId;
+                                        loadChapter(chapterId);
+                                    });
+                                }
+                                
+                                // Charger le premier chapitre
+                                const firstChapterId = Object.keys(courseData.chapters)[0];
+                                if (firstChapterId) {
+                                    chapterSelect.value = firstChapterId;
+                                    loadChapter(firstChapterId);
+                                }
+                                
+                                alert('Cours importé avec succès !');
+                            }
+                        } catch (error) {
+                            alert('Erreur lors de l\'importation du fichier : ' + error.message);
+                        }
+                    };
+                    
+                    reader.readAsText(file);
+                };
+                
+                input.click();
             });
             
             document.getElementById('add-chapter').addEventListener('click', function(e) {
@@ -1331,273 +2033,285 @@
                 }
             });
             
-            document.getElementById('add-activity').addEventListener('click', function(e) {
+            // Gestion des nouveaux outils
+            document.getElementById('add-prerequisites').addEventListener('click', function(e) {
                 e.preventDefault();
-                // Activer le type de contenu "Activité"
-                contentTypeButtons.forEach(btn => btn.classList.remove('active'));
-                document.querySelector('[data-type="activity"]').classList.add('active');
-                activeContentType = 'activity';
-                
-                // Initialiser avec un contenu par défaut
-                editor.innerHTML = "Décrivez ici l'activité pédagogique...<br><br><strong>Objectifs :</strong><br>- <br>- <br><br><strong>Matériel nécessaire :</strong><br>- <br>- <br><br><strong>Déroulement :</strong><br>1. <br>2. <br>3. ";
+                activateContentType('prerequisites', "Listez les prérequis nécessaires pour cette leçon...");
             });
             
-            // Gestion de l'exportation
-            const exportModal = document.getElementById('export-modal');
-            const exportPdfBtn = document.getElementById('export-pdf');
-            const exportHtmlBtn = document.getElementById('export-html');
-            const cancelExportBtn = document.getElementById('cancel-export');
-            const confirmExportBtn = document.getElementById('confirm-export');
-            const exportAllChapters = document.getElementById('export-all-chapters');
-            const chapterSelection = document.getElementById('chapter-selection');
-            const exportChapters = document.getElementById('export-chapters');
+            document.getElementById('add-prerequisites-check').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('prerequisites-check', "Ajoutez ici une activité de vérification des prérequis...");
+            });
             
-            let currentExportType = '';
+            document.getElementById('add-problem-situation').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('problem-situation', "Décrivez la situation problème qui introduira la leçon...");
+            });
             
-            // Toggle pour l'export de tous les chapitres
-            exportAllChapters.addEventListener('change', function() {
+            document.getElementById('add-solution-situation').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('situation-solution', "Proposez la solution à la situation problème...");
+            });
+            
+            document.getElementById('add-general-objectives').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('general-objectives', "Définissez les objectifs généraux de cette leçon...");
+            });
+            
+            document.getElementById('add-specific-objectives').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('specific-objectives', "Listez les objectifs spécifiques de cette leçon...");
+            });
+            
+            document.getElementById('add-skills').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('skills', "Précisez les compétences visées par cette leçon...");
+            });
+            
+            document.getElementById('add-lesson-theme').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('lesson-theme', "Indiquez le thème de la leçon...");
+            });	
+			document.getElementById('add-lesson-title').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('lesson-title', "Indiquez le titre de la leçon...");
+            });
+            
+            document.getElementById('add-vocabulary').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('vocabulary', "Listez le vocabulaire spécifique à cette leçon...");
+            });
+            
+            document.getElementById('add-definition').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('definition', "Ajoutez une définition...");
+            });
+            
+            document.getElementById('add-example').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('example', "Donnez un exemple illustratif...");
+            });
+            
+            document.getElementById('add-theorem').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('theorem', "Énoncez le théorème...");
+            });
+            
+            document.getElementById('add-demonstration').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('demonstration', "Rédigez la démonstration...");
+            });
+            
+            document.getElementById('add-proof').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('proof', "Présentez la preuve...");
+            });
+            
+            document.getElementById('add-property').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('property', "Énoncez la propriété...");
+            });
+            
+            document.getElementById('add-reciprocal').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('reciprocal', "Énoncez la réciproque de la propriété...");
+            });
+            
+            document.getElementById('add-method-points').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('method-points', "Listez les points méthode importants...");
+            });
+            
+            document.getElementById('add-remark').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('remark', "Ajoutez une remarque...");
+            });
+            
+            document.getElementById('add-application-exercise').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('exercise', "Rédigez un exercice d'application...");
+            });
+            
+            document.getElementById('add-exercise-solution').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('exercise-solution', "Proposez la solution de l'exercice...");
+            });
+            
+            document.getElementById('add-activity').addEventListener('click', function(e) {
+                e.preventDefault();
+                activateContentType('activity', "Concevez une activité pédagogique...");
+            });
+            
+            document.getElementById('add-media').addEventListener('click', function(e) {
+                e.preventDefault();
+                mediaFileInput.click();
+            });
+            
+            function activateContentType(type, placeholder) {
+                // Activer le bouton correspondant
+                contentTypeButtons.forEach(btn => {
+                    if (btn.dataset.type === type) {
+                        btn.classList.add('active');
+                        activeContentType = type;
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+                
+                // Vérifier si ce type de contenu existe déjà
+                const currentChapter = document.getElementById('chapter-select').value;
+                if (courseData.chapters[currentChapter] && courseData.chapters[currentChapter].content[type]) {
+                    editor.innerHTML = courseData.chapters[currentChapter].content[type];
+                } else {
+                    editor.innerHTML = placeholder;
+                }
+            }
+            
+            // Exportation PDF
+            document.getElementById('export-pdf').addEventListener('click', function(e) {
+                e.preventDefault();
+                showExportModal('pdf');
+            });
+            
+            // Exportation HTML
+            document.getElementById('export-html').addEventListener('click', function(e) {
+                e.preventDefault();
+                showExportModal('html');
+            });
+            
+            function showExportModal(format) {
+                const modal = document.getElementById('export-modal');
+                modal.style.display = 'flex';
+                
+                // Configurer l'exportation selon le format
+                document.getElementById('confirm-export').dataset.format = format;
+                
+                // Afficher/masquer les options spécifiques
+                if (format === 'pdf') {
+                    document.getElementById('export-all-chapters').checked = true;
+                    document.getElementById('chapter-selection').style.display = 'none';
+                } else {
+                    document.getElementById('chapter-selection').style.display = 'block';
+                }
+            }
+            
+            // Gestion de la modal d'exportation
+            document.getElementById('cancel-export').addEventListener('click', function() {
+                document.getElementById('export-modal').style.display = 'none';
+            });
+            
+            document.getElementById('export-all-chapters').addEventListener('change', function() {
+                const chapterSelection = document.getElementById('chapter-selection');
                 chapterSelection.style.display = this.checked ? 'none' : 'block';
             });
             
-            // Ouvrir le modal d'exportation PDF
-            exportPdfBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                currentExportType = 'pdf';
-                exportModal.style.display = 'flex';
-            });
-            
-            // Ouvrir le modal d'exportation HTML
-            exportHtmlBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                currentExportType = 'html';
-                exportModal.style.display = 'flex';
-            });
-            
-            // Annuler l'exportation
-            cancelExportBtn.addEventListener('click', function() {
-                exportModal.style.display = 'none';
-            });
-            
-            // Confirmer l'exportation
-            confirmExportBtn.addEventListener('click', function() {
-                exportModal.style.display = 'none';
-                
+            document.getElementById('confirm-export').addEventListener('click', function() {
+                const format = this.dataset.format;
                 const includeTitle = document.getElementById('export-title').checked;
                 const includeDescription = document.getElementById('export-description').checked;
-                const exportAll = document.getElementById('export-all-chapters').checked;
+                const exportAllChapters = document.getElementById('export-all-chapters').checked;
                 
                 let chaptersToExport = [];
                 
-                if (exportAll) {
+                if (exportAllChapters) {
                     chaptersToExport = Object.keys(courseData.chapters);
                 } else {
-                    // Récupérer les chapitres sélectionnés
-                    for (let option of exportChapters.options) {
-                        if (option.selected) {
-                            chaptersToExport.push(option.value);
-                        }
+                    const selectedOptions = document.getElementById('export-chapters').selectedOptions;
+                    for (let option of selectedOptions) {
+                        chaptersToExport.push(option.value);
                     }
                 }
                 
-                if (currentExportType === 'pdf') {
-                    exportToPdf(includeTitle, includeDescription, chaptersToExport);
-                } else if (currentExportType === 'html') {
-                    exportToHtml(includeTitle, includeDescription, chaptersToExport);
+                if (format === 'pdf') {
+                    exportToPDF(includeTitle, includeDescription, chaptersToExport);
+                } else if (format === 'html') {
+                    exportToHTML(includeTitle, includeDescription, chaptersToExport);
                 }
+                
+                document.getElementById('export-modal').style.display = 'none';
             });
             
-            // Fonction pour exporter en PDF
-            function exportToPdf(includeTitle, includeDescription, chaptersToExport) {
-                // Créer un conteneur pour le contenu à exporter
-                const content = document.createElement('div');
-                content.style.padding = '20px';
-                content.style.fontFamily = 'Arial, sans-serif';
+            function exportToPDF(includeTitle, includeDescription, chaptersToExport) {
+                // Préparer le contenu pour l'exportation PDF
+                const content = prepareExportContent(includeTitle, includeDescription, chaptersToExport);
                 
-                // Ajouter le titre si demandé
-                if (includeTitle) {
-                    const title = document.createElement('h1');
-                    title.textContent = courseData.title;
-                    title.style.textAlign = 'center';
-                    title.style.marginBottom = '20px';
-                    title.style.color = '#2c3e50';
-                    content.appendChild(title);
-                }
-                
-                // Ajouter la description si demandée
-                if (includeDescription && courseData.description) {
-                    const description = document.createElement('p');
-                    description.textContent = courseData.description;
-                    description.style.textAlign = 'center';
-                    description.style.marginBottom = '30px';
-                    description.style.fontStyle = 'italic';
-                    content.appendChild(description);
-                }
-                
-                // Ajouter les chapitres sélectionnés
-                chaptersToExport.forEach(chapterId => {
-                    const chapter = courseData.chapters[chapterId];
-                    if (!chapter) return;
-                    
-                    const chapterElement = document.createElement('div');
-                    chapterElement.style.marginBottom = '30px';
-                    
-                    const chapterTitle = document.createElement('h2');
-                    chapterTitle.textContent = chapter.title;
-                    chapterTitle.style.color = '#2c3e50';
-                    chapterTitle.style.borderBottom = '2px solid #3498db';
-                    chapterTitle.style.paddingBottom = '10px';
-                    chapterTitle.style.marginBottom = '20px';
-                    chapterElement.appendChild(chapterTitle);
-                    
-                    const chapterContent = document.createElement('div');
-                    
-                    // Ajouter tous les contenus du chapitre
-                    for (const [contentType, content] of Object.entries(chapter.content)) {
-                        const contentDiv = document.createElement('div');
-                        contentDiv.style.marginBottom = '15px';
-                        contentDiv.innerHTML = content;
-                        chapterContent.appendChild(contentDiv);
-                    }
-                    
-                    chapterElement.appendChild(chapterContent);
-                    content.appendChild(chapterElement);
-                });
-                
-                // Options pour html2pdf
+                // Configuration pour html2pdf
                 const options = {
                     margin: 10,
-                    filename: `${courseData.title.replace(/\s+/g, '_')}.pdf`,
+                    filename: courseData.title.replace(/\s+/g, '_') + '.pdf',
                     image: { type: 'jpeg', quality: 0.98 },
                     html2canvas: { scale: 2 },
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
                 };
                 
+                // Créer un élément temporaire pour le contenu
+                const element = document.createElement('div');
+                element.innerHTML = content;
+                
                 // Générer le PDF
-                html2pdf().set(options).from(content).save();
+                html2pdf().set(options).from(element).save();
             }
             
-            // Fonction pour exporter en HTML
-            function exportToHtml(includeTitle, includeDescription, chaptersToExport) {
-                let htmlContent = `<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${courseData.title}</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-        h2 {
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        .description {
-            text-align: center;
-            font-style: italic;
-            margin-bottom: 30px;
-        }
-        .chapter {
-            margin-bottom: 40px;
-        }
-        .problem-situation, .situation-solution, .prerequisites, 
-        .activity, .activity-solution, .exercise, .exercise-solution,
-        .theorem, .definition, .summary, .homework {
-            padding: 15px;
-            margin: 15px 0;
-            border-left: 5px solid;
-            border-radius: 0 8px 8px 0;
-        }
-        .problem-situation { background: #ffeaa7; border-color: #fdcb6e; }
-        .situation-solution { background: #d8f8ff; border-color: #81ecec; }
-        .prerequisites { background: #ffeaa7; border-color: #fdcb6e; }
-        .activity { background: #e7f9ed; border-color: #2ecc71; }
-        .activity-solution { background: #f4ecf7; border-color: #9b59b6; }
-        .exercise { background: #fef9e7; border-color: #f1c40f; }
-        .exercise-solution { background: #f4ecf7; border-color: #9b59b6; }
-        .theorem { background: #e8f4fc; border-color: #3498db; }
-        .definition { background: #e8f4fc; border-color: #3498db; }
-        .summary { background: #fdebd0; border-color: #f39c12; }
-        .homework { background: #e8d6ff; border-color: #8e44ad; }
-        .formula {
-            font-family: 'Cambria Math', serif;
-            text-align: center;
-            font-size: 1.2rem;
-            margin: 15px 0;
-            padding: 15px;
-            background: #f9f9f9;
-            border-radius: 8px;
-            border: 1px dashed #3498db;
-        }
-    </style>
-</head>
-<body>
-`;
+            function exportToHTML(includeTitle, includeDescription, chaptersToExport) {
+                // Préparer le contenu pour l'exportation HTML
+                const content = prepareExportContent(includeTitle, includeDescription, chaptersToExport);
+                
+                // Créer un blob avec le contenu HTML
+                const blob = new Blob([`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${courseData.title}</title><style>body{font-family:Arial,sans-serif;line-height:1.6;margin:20px;}h1,h2,h3{color:#2c3e50;}div{margin-bottom:20px;}</style></head><body>${content}</body></html>`], { type: 'text/html' });
+                
+                // Créer un lien de téléchargement
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = courseData.title.replace(/\s+/g, '_') + '.html';
+                a.click();
+            }
+            
+            function prepareExportContent(includeTitle, includeDescription, chaptersToExport) {
+                let content = '';
                 
                 // Ajouter le titre si demandé
                 if (includeTitle) {
-                    htmlContent += `    <h1>${courseData.title}</h1>\n`;
+                    content += `<h1>${courseData.title}</h1>`;
                 }
                 
                 // Ajouter la description si demandée
-                if (includeDescription && courseData.description) {
-                    htmlContent += `    <p class="description">${courseData.description}</p>\n`;
+                if (includeDescription) {
+                    content += `<p><em>${courseData.description}</em></p>`;
                 }
                 
+                // Ajouter les informations de l'enseignant
+                content += `<div class="teacher-info">
+                    <h3>Informations de l'enseignant</h3>
+                    <p><strong>Établissement:</strong> ${courseData.teacherInfo.schoolName}</p>
+                    <p><strong>Enseignant:</strong> ${courseData.teacherInfo.teacherName}</p>
+                    <p><strong>Classe:</strong> ${courseData.teacherInfo.class}</p>
+                    <p><strong>Année scolaire:</strong> ${courseData.teacherInfo.schoolYear}</p>
+                </div>`;
+                
                 // Ajouter les chapitres sélectionnés
-                chaptersToExport.forEach(chapterId => {
+                for (const chapterId of chaptersToExport) {
                     const chapter = courseData.chapters[chapterId];
-                    if (!chapter) return;
+                    if (!chapter) continue;
                     
-                    htmlContent += `    <div class="chapter">\n`;
-                    htmlContent += `        <h2>${chapter.title}</h2>\n`;
+                    content += `<div class="chapter">
+                        <h2>${chapter.title}</h2>`;
                     
-                    // Ajouter tous les contenus du chapitre
-                    for (const [contentType, content] of Object.entries(chapter.content)) {
-                        const contentClass = contentType.replace(/_/g, '-');
-                        htmlContent += `        <div class="${contentClass}">\n`;
-                        htmlContent += `            ${content.replace(/\n/g, '<br>')}\n`;
-                        htmlContent += `        </div>\n`;
+                    for (const [contentType, chapterContent] of Object.entries(chapter.content)) {
+                        content += `<div class="content-${contentType}">
+                            ${chapterContent}
+                        </div>`;
                     }
                     
-                    htmlContent += `    </div>\n`;
-                });
+                    content += `</div>`;
+                }
                 
-                htmlContent += `</body>\n</html>`;
-                
-                // Créer un blob et un lien de téléchargement
-                const blob = new Blob([htmlContent], { type: 'text/html' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `${courseData.title.replace(/\s+/g, '_')}.html`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
+                return content;
             }
+            
+            // Initialisation finale
+            updatePreview();
         });
-        
-        function toggleSolution(id) {
-            const solution = document.getElementById(id);
-            if (solution.style.display === 'block') {
-                solution.style.display = 'none';
-            } else {
-                solution.style.display = 'block';
-            }
-        }
     </script>
 </body>
 </html>
