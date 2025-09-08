@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -192,6 +191,19 @@
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
+            position: relative;
+        }
+        
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .preview-actions {
+            display: flex;
+            gap: 10px;
         }
         
         .form-group {
@@ -867,6 +879,34 @@
             gap: 15px;
         }
         
+        /* Modal plein écran */
+        .fullscreen-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 3000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .fullscreen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .fullscreen-content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
         @media (max-width: 1100px) {
             .editor-container {
                 grid-template-columns: 1fr;
@@ -997,19 +1037,19 @@
                 <div class="info-grid">
                     <div class="form-group">
                         <label for="school-name">Nom de l'établissement</label>
-                        <input type="text" id="school-name" class="form-control" value="Lycée Moderne">
+                        <input type="text" id="school-name" class="form-control" value="Lycée NIAMTOUGOU">
                     </div>
                     <div class="form-group">
                         <label for="inspection">Inspection (IESG)</label>
-                        <input type="text" id="inspection" class="form-control" value="IESG Abidjan">
+                        <input type="text" id="inspection" class="form-control" value="IESG NIAMTOUGOU">
                     </div>
                     <div class="form-group">
                         <label for="dre">Direction Régionale (DRE)</label>
-                        <input type="text" id="dre" class="form-control" value="DRE Abidjan">
+                        <input type="text" id="dre" class="form-control" value="DRE KARA">
                     </div>
                     <div class="form-group">
                         <label for="teacher-name">Nom de l'enseignant</label>
-                        <input type="text" id="teacher-name" class="form-control" value="M. Koné Abdoul">
+                        <input type="text" id="teacher-name" class="form-control" value="Mr KOLA M.Essohouna">
                     </div>
                     <div class="form-group">
                         <label for="school-year">Année scolaire</label>
@@ -1017,7 +1057,7 @@
                     </div>
                     <div class="form-group">
                         <label for="class">Classe</label>
-                        <input type="text" id="class" class="form-control" value="Seconde C">
+                        <input type="text" id="class" class="form-control" value="Seconde CD">
                     </div>
                     <div class="form-group">
                         <label for="boys-count">Effectif garçons</label>
@@ -1029,11 +1069,11 @@
                     </div>
                     <div class="form-group">
                         <label for="teacher-phone">Contact WhatsApp</label>
-                        <input type="text" id="teacher-phone" class="form-control" value="+225 07 08 09 10 11">
+                        <input type="text" id="teacher-phone" class="form-control" value="+228 92 87 16 05">
                     </div>
                     <div class="form-group">
                         <label for="teacher-email">Adresse email</label>
-                        <input type="email" id="teacher-email" class="form-control" value="kone.abdoul@lyceemoderne.ci">
+                        <input type="email" id="teacher-email" class="form-control" value="jeanskodoc22@gmail.com">
                     </div>
                 </div>
             </div>
@@ -1203,7 +1243,14 @@
                 </div>
                 
                 <div class="preview-panel">
-                    <h2><i class="fas fa-eye"></i> Aperçu du cours</h2>
+                    <div class="preview-header">
+                        <h2><i class="fas fa-eye"></i> Aperçu du cours</h2>
+                        <div class="preview-actions">
+                            <button class="btn btn-primary" id="fullscreen-preview">
+                                <i class="fas fa-expand"></i> Plein écran
+                            </button>
+                        </div>
+                    </div>
                     
                     <div id="course-preview">
                         <!-- Contenu généré dynamiquement -->
@@ -1272,6 +1319,19 @@
         </div>
     </div>
 
+    <!-- Modal plein écran pour l'aperçu -->
+    <div class="fullscreen-modal" id="fullscreen-modal">
+        <div class="fullscreen-header">
+            <h2>Aperçu du cours en plein écran</h2>
+            <button class="btn btn-danger" id="close-fullscreen">
+                <i class="fas fa-times"></i> Fermer
+            </button>
+        </div>
+        <div class="fullscreen-content" id="fullscreen-content">
+            <!-- Le contenu de l'aperçu sera inséré ici -->
+        </div>
+    </div>
+
     <script>
         // Fonctionnalités de base
         document.addEventListener('DOMContentLoaded', function() {
@@ -1310,7 +1370,7 @@
                     "activite": {
                         title: "Activité Pédagogique",
                         content: {
-                            "activity": "En groupe de 3 ou 4, mesurez les dimensions de différents triangles rectangles dans la salle de classe et vérifiez si elles respecten le théorème de Pythagore.\n\nMatériel nécessaire :\n- Ruban à mesurer\n- Rapporteur\n- Calculatrice\n- Feuille de calcul",
+                            "activity": "En groupe de 3 ou 4, mesurez les dimensions de différents triangles rectangles dans la salle de classe et vérifiez si elles respectent le théorème de Pythagore.\n\nMatériel nécessaire :\n- Ruban à mesurer\n- Rapporteur\n- Calculatrice\n- Feuille de calcul",
                             "activity-solution": "Solution de l'activité :\n\n1. Mesurez les côtés de plusieurs triangles rectangles\n2. Vérifiez que pour chaque triangle, le carré de l'hypoténuse est égal à la somme des carrés des deux autres côtés\n3. Notez vos observations et tirez une conclusion"
                         },
                         media: []
@@ -1358,7 +1418,7 @@
                     "exercices": {
                         title: "Exercices d'application",
                         content: {
-                            "exercise": "Exercice 1 (Pythagore):\nUn triangle ABC a pour dimensions AB = 6 cm, AC = 8 cm et BC = 10 cm.\nCe triangle est-il rectangle ? Si oui, en quel point ?\n\nExercice 2 (Thalès):\nSur la figure ci-dessous, les droites (MN) et (BC) sont parallèles.\nOn donne : AB = 12 cm, AM = 3 cm, AC = 10 cm.\nCalculer AN.\n\nExercice 3 (Problème combiné):\nUn échelle de 5 m est appuyée contre un mur. Le pied de l'échelle est à 2 m du mur.\n1. À quelle hauteur le sommet de l'échelle touche-t-il le mur ?\n2. Si on écarte le pied de l'échelle de 0,5 m supplémentaire, à quelle hauteur montera-t-elle alors ?",
+                            "exercise": "Exercice 1 (Pythagore):\nUn triangle ABC a pour dimensions AB = 6 cm, AC = 8 cm et BC = 10 cm.\nCe triangle est-il rectangle ? Si oui, en quel point ?\n\nExercice 2 (Thalès):\nSur la figure ci-dessous, les droites (MN) et (BC) sont parallèles.\nOn donne : AB = 12 cm, AM = 3 cm, AC = 10 cm.\nCalculer AN.\n\nExercice 3 (Problème combiné):\nUne échelle de 5 m est appuyée contre un mur. Le pied de l'échelle est à 2 m du mur.\n1. À quelle hauteur le sommet de l'échelle touche-t-il le mur ?\n2. Si on écarte le pied de l'échelle de 0,5 m supplémentaire, à quelle hauteur montera-t-elle alors ?",
                             "exercise-solution": "Solution Exercice 1:\nOn calcule :\nBC² = 10² = 100\nAB² + AC² = 6² + 8² = 36 + 64 = 100\nComme BC² = AB² + AC², d'après la réciproque du théorème de Pythagore, le triangle ABC est rectangle en A.\n\nSolution Exercice 2:\nD'après le théorème de Thalès :\nAM/AB = AN/AC\n3/12 = AN/10\nAN = (3 × 10)/12 = 30/12 = 2,5 cm\n\nSolution Exercice 3:\n1. On utilise le théorème de Pythagore :\nHauteur² = 5² - 2² = 25 - 4 = 21\nHauteur = √21 ≈ 4,58 m\n\n2. Nouvelle distance du pied au mur : 2 + 0,5 = 2,5 m\nNouvelle hauteur² = 5² - 2,5² = 25 - 6,25 = 18,75\nNouvelle hauteur = √18,75 ≈ 4,33 m"
                         },
                         media: []
@@ -1373,7 +1433,7 @@
                     "devoir-maison": {
                         title: "Devoir Maison",
                         content: {
-                            "homework": "Exercices à rendre:\n\nExercice 1: Un triangle a pour côtés 7 cm, 8 cm et 11 cm. Est-il rectangle ? Justifier.\n\nExercice 2: Dans un triangle ABC, on place M sur [AB] and N sur [AC] tels que AM = 4 cm, AB = 10 cm, AC = 15 cm. Les droites (MN) et (BC) sont parallèles. Calculer AN.\n\nExercice 3: Une tour est observée par deux personnes situées à 50 m l'une de l'autre. La première voit le sommet sous un angle de 45° et la seconde sous un angle de 30°. Calculer la hauteur de la tour.\n\nProblème: Un bateau quitte le port et navigue 8 km vers l'est, puis 6 km vers le nord. Quelle distance le sépare alors du port ? S'il veut revenir directement au port, quelle distance devra-t-il parcourir ?\n\nDate de rendu: 15 novembre 2025\n\nConsignes: Rédigez soigneusement avec toutes les étapes de raisonnement. Les calculs doivent être détaillés."
+                            "homework": "Exercices à rendre:\n\nExercice 1: Un triangle a pour côtés 7 cm, 8 cm et 11 cm. Est-il rectangle ? Justifier.\n\nExercice 2: Dans un triangle ABC, on place M sur [AB] et N sur [AC] tels que AM = 4 cm, AB = 10 cm, AC = 15 cm. Les droites (MN) et (BC) sont parallèles. Calculer AN.\n\nExercice 3: Une tour est observée par deux personnes situées à 50 m l'une de l'autre. La première voit le sommet sous un angle de 45° et la seconde sous un angle de 30°. Calculer la hauteur de la tour.\n\nProblème: Un bateau quitte le port et navigue 8 km vers l'est, puis 6 km vers le nord. Quelle distance le sépare alors du port ? S'il veut revenir directement au port, quelle distance devra-t-il parcourir ?\n\nDate de rendu: 15 novembre 2025\n\nConsignes: Rédigez soigneusement avec toutes les étapes de raisonnement. Les calculs doivent être détaillés."
                         },
                         media: []
                     }
@@ -1472,15 +1532,6 @@
                 handleMediaFiles(this.files);
             });
             
-            // Ajouter une vidéo YouTube
-            addYoutubeBtn.addEventListener('click', function() {
-                const youtubeUrl = youtubeUrlInput.value.trim();
-                if (youtubeUrl) {
-                    addYoutubeVideo(youtubeUrl);
-                    youtubeUrlInput.value = '';
-                }
-            });
-            
             function handleMediaFiles(files) {
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
@@ -1495,6 +1546,17 @@
                                 <img src="${e.target.result}" alt="${file.name}">
                                 <div class="remove-media">&times;</div>
                             `;
+                            
+                            // Sauvegarder l'image dans les données du cours
+                            const currentChapter = document.getElementById('chapter-select').value;
+                            if (!courseData.chapters[currentChapter].media) {
+                                courseData.chapters[currentChapter].media = [];
+                            }
+                            courseData.chapters[currentChapter].media.push({
+                                type: 'image',
+                                name: file.name,
+                                data: e.target.result
+                            });
                         } else if (file.type.startsWith('video/')) {
                             mediaItem.innerHTML = `
                                 <video controls>
@@ -1522,6 +1584,15 @@
                     reader.readAsDataURL(file);
                 }
             }
+            
+            // Ajouter une vidéo YouTube
+            addYoutubeBtn.addEventListener('click', function() {
+                const youtubeUrl = youtubeUrlInput.value.trim();
+                if (youtubeUrl) {
+                    addYoutubeVideo(youtubeUrl);
+                    youtubeUrlInput.value = '';
+                }
+            });
             
             function addYoutubeVideo(url) {
                 // Extraire l'ID de la vidéo YouTube
@@ -1637,6 +1708,27 @@
                             activeContentType = firstContentType;
                         } else {
                             btn.classList.remove('active');
+                        }
+                    });
+                }
+                
+                // Charger les médias
+                mediaPreview.innerHTML = '';
+                if (chapter.media && chapter.media.length > 0) {
+                    chapter.media.forEach(media => {
+                        if (media.type === 'image') {
+                            const mediaItem = document.createElement('div');
+                            mediaItem.className = 'media-item';
+                            mediaItem.innerHTML = `
+                                <img src="${media.data}" alt="${media.name}">
+                                <div class="remove-media">&times;</div>
+                            `;
+                            mediaPreview.appendChild(mediaItem);
+                            
+                            // Ajouter l'événement pour supprimer le média
+                            mediaItem.querySelector('.remove-media').addEventListener('click', function() {
+                                mediaItem.remove();
+                            });
                         }
                     });
                 }
@@ -1783,6 +1875,17 @@
                             </div>
                         `;
                     }
+                }
+                
+                // Ajouter les médias
+                if (chapter.media && chapter.media.length > 0) {
+                    previewHTML += `<div class="media-container">`;
+                    chapter.media.forEach(media => {
+                        if (media.type === 'image') {
+                            previewHTML += `<img src="${media.data}" alt="${media.name}" style="max-width: 100%; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">`;
+                        }
+                    });
+                    previewHTML += `</div>`;
                 }
                 
                 previewHTML += `</div></div>`;
@@ -2299,11 +2402,71 @@
                         </div>`;
                     }
                     
+                    // Ajouter les médias
+                    if (chapter.media && chapter.media.length > 0) {
+                        content += `<div class="media-container">`;
+                        chapter.media.forEach(media => {
+                            if (media.type === 'image') {
+                                content += `<img src="${media.data}" alt="${media.name}" style="max-width: 100%; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">`;
+                            }
+                        });
+                        content += `</div>`;
+                    }
+                    
                     content += `</div>`;
                 }
                 
                 return content;
             }
+            
+            // Fonctionnalité plein écran pour l'aperçu
+            const fullscreenPreviewBtn = document.getElementById('fullscreen-preview');
+            const fullscreenModal = document.getElementById('fullscreen-modal');
+            const fullscreenContent = document.getElementById('fullscreen-content');
+            const closeFullscreenBtn = document.getElementById('close-fullscreen');
+            
+            fullscreenPreviewBtn.addEventListener('click', function() {
+                // Copier le contenu de l'aperçu dans la modal plein écran
+                fullscreenContent.innerHTML = document.getElementById('course-preview').innerHTML;
+                
+                // Afficher la modal
+                fullscreenModal.style.display = 'block';
+                
+                // Ajouter un style pour améliorer l'affichage en plein écran
+                const style = document.createElement('style');
+                style.innerHTML = `
+                    .fullscreen-modal .chapter {
+                        margin-bottom: 40px;
+                    }
+                    .fullscreen-modal .chapter h2 {
+                        font-size: 2rem;
+                        margin-bottom: 20px;
+                    }
+                    .fullscreen-modal .chapter-content {
+                        font-size: 1.1rem;
+                        line-height: 1.8;
+                    }
+                    .fullscreen-modal img {
+                        max-width: 100%;
+                        height: auto;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                        margin: 15px 0;
+                    }
+                `;
+                fullscreenContent.appendChild(style);
+            });
+            
+            closeFullscreenBtn.addEventListener('click', function() {
+                fullscreenModal.style.display = 'none';
+            });
+            
+            // Fermer la modal en cliquant à l'extérieur du contenu
+            fullscreenModal.addEventListener('click', function(e) {
+                if (e.target === fullscreenModal) {
+                    fullscreenModal.style.display = 'none';
+                }
+            });
             
             // Initialisation finale
             updatePreview();
