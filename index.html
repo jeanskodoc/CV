@@ -907,6 +907,107 @@
             margin: 0 auto;
         }
         
+        /* Widget WhatsApp */
+        .whatsapp-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .whatsapp-button {
+            width: 60px;
+            height: 60px;
+            background-color: #25d366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: pulse 2s infinite;
+        }
+        
+        .whatsapp-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+        }
+        
+        .whatsapp-button i {
+            color: white;
+            font-size: 30px;
+        }
+        
+        .whatsapp-tooltip {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            transform: translateY(10px);
+        }
+        
+        .whatsapp-tooltip:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            right: 15px;
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: white transparent transparent;
+        }
+        
+        .whatsapp-button:hover + .whatsapp-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .whatsapp-tooltip p {
+            margin: 0;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(37, 211, 102, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+            }
+        }
+        
+        /* Bouton WhatsApp dans les infos enseignant */
+        .whatsapp-group-btn {
+            background-color: #25d366;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .whatsapp-group-btn:hover {
+            background-color: #128c7e;
+        }
+        
         @media (max-width: 1100px) {
             .editor-container {
                 grid-template-columns: 1fr;
@@ -950,6 +1051,25 @@
             .header-actions {
                 flex-direction: column;
                 align-items: flex-end;
+            }
+            
+            .whatsapp-widget {
+                bottom: 70px;
+                right: 10px;
+            }
+            
+            .whatsapp-button {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .whatsapp-button i {
+                font-size: 24px;
+            }
+            
+            .whatsapp-tooltip {
+                width: 160px;
+                font-size: 12px;
             }
         }
     </style>
@@ -1022,6 +1142,9 @@
                 <li><a href="#" id="add-exercise-solution"><i class="fas fa-check-double"></i> Solution exercice</a></li>
                 <li><a href="#" id="add-activity"><i class="fas fa-plus-circle"></i> Ajouter une activité</a></li>
                 <li><a href="#" id="add-media"><i class="fas fa-plus-circle"></i> Ajouter un média</a></li>
+                <!-- Nouveaux boutons ajoutés -->
+                <li><a href="#" id="scientific-formula"><i class="fas fa-square-root-variable"></i> Formule scientifique</a></li>
+                <li><a href="#" id="screen-sharing"><i class="fas fa-desktop"></i> Partage d'écran</a></li>
             </ul>
             
             <h3><i class="fas fa-download"></i> Export</h3>
@@ -1074,6 +1197,13 @@
                     <div class="form-group">
                         <label for="teacher-email">Adresse email</label>
                         <input type="email" id="teacher-email" class="form-control" value="jeanskodoc22@gmail.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="whatsapp-group">Lien du groupe WhatsApp</label>
+                        <input type="text" id="whatsapp-group" class="form-control" placeholder="https://chat.whatsapp.com/..." value="https://chat.whatsapp.com/examplelink">
+                        <button class="whatsapp-group-btn" id="join-whatsapp-group">
+                            <i class="fab fa-whatsapp"></i> Rejoindre le groupe WhatsApp
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1265,6 +1395,16 @@
         </footer>
     </div>
 
+    <!-- Widget WhatsApp -->
+    <div class="whatsapp-widget">
+        <div class="whatsapp-button" id="whatsapp-chat">
+            <i class="fab fa-whatsapp"></i>
+        </div>
+        <div class="whatsapp-tooltip">
+            <p>Rejoindre le groupe WhatsApp de la classe</p>
+        </div>
+    </div>
+
     <!-- Modal d'exportation -->
     <div class="export-modal" id="export-modal">
         <div class="export-modal-content">
@@ -1349,7 +1489,8 @@
                     boysCount: 25,
                     girlsCount: 20,
                     teacherPhone: "+228 92 87 16 05",
-                    teacherEmail: "jeanskodoc22@gmail.com"
+                    teacherEmail: "jeanskodoc22@gmail.com",
+                    whatsappGroup: "https://chat.whatsapp.com/examplelink"
                 },
                 chapters: {
                     "situation-probleme": {
@@ -1394,15 +1535,15 @@
                     "reciproque-pythagore": {
                         title: "Réciproque de Pythagore",
                         content: {
-                            "theorem": "Si dans un triangle, le carré de la longueur du plus grand côté est égal à la somme des carrés des longueurs des deux autres côtés, alors ce triangle est rectangle.",
-                            "example": "Soit un triangle ABC avec AB = 5 cm, AC = 12 cm et BC = 13 cm.\n\nVérifions s'il est rectangle :\nOn calcule BC² = 13² = 169\nOn calcule AB² + AC² = 5² + 12² = 25 + 144 = 169\n\nComme BC² = AB² + AC², d'après la réciproque du théorème de Pythagore, le triangle ABC est rectangle en A."
+                            "theorem": "If dans un triangle, le carré de la longueur du plus grand côté est égal à la somme des carrés des longueurs des deux autres côtés, alors ce triangle est rectangle.",
+                            "example": "Soit un triangle ABC avec AB = 5 cm, AC = 12 cm и BC = 13 cm.\n\nVérifions s'il est rectangle :\nOn calcule BC² = 13² = 169\nOn calcule AB² + AC² = 5² + 12² = 25 + 144 = 169\n\nComme BC² = AB² + AC², d'après la réciproque du théorème de Pythagore, le triangle ABC est rectangle en A."
                         },
                         media: []
                     },
                     "thales": {
                         title: "Théorème de Thalès",
                         content: {
-                            "theorem": "Soit deux droites sécantes en un point A, et deux points B et M sur l'une, et C et N sur l'autre.\n\nSi les droites (BC) et (MN) sont parallèles, alors les triangles ABC et AMN formen une configuration de Thalès et on a : AB/AM = AC/AN = BC/MN",
+                            "theorem": "Soit deux droites sécantes en un point A, et deux points B et M sur l'une, et C et N sur l'autre.\n\nSi les droites (BC) et (MN) sont parallèles, alors les triangles ABC et AMN forment une configuration de Thalès et on a : AB/AM = AC/AN = BC/MN",
                             "example": "Soit un triangle ABC et une droite parallèle à (BC) qui coupe (AB) en M et (AC) en N.\n\nOn donne : AB = 10 cm, AM = 4 cm, AC = 8 cm.\n\nCalculons AN :\nD'après le théorème de Thalès : AM/AB = AN/AC\nDonc 4/10 = AN/8 ⇒ AN = (4 × 8)/10 = 32/10 = 3,2 cm"
                         },
                         media: []
@@ -1411,7 +1552,7 @@
                         title: "Réciproque de Thalès",
                         content: {
                             "theorem": "Soit deux droites (AB) et (AC) sécantes en A, avec M sur (AB) et N sur (AC).\n\nSi AM/AB = AN/AC et si les points A, B, M d'une part et A, C, N d'autre part sont alignés dans le même ordre, alors les droites (MN) et (BC) sont parallèles.",
-                            "example": "Soit un triangle ABC avec AB = 12 cm, AC = 9 cm.\n\nSur le côté [AB], on place un point M tel que AM = 8 cm.\nSur le côté [AC], on place un point N tel que AN = 6 cm.\n\nLes droites (MN) et (BC) sont-elles parallèles ?\nOn calcule : AM/AB = 8/12 = 2/3 et AN/AC = 6/9 = 2/3\n\nComme AM/AB = AN/AC, d'après la réciproque du théorème de Thalès, les droites (MN) et (BC) sont parallèles."
+                            "example": "Soit un triangle ABC avec AB = 12 cm, AC = 9 cm.\n\nSur le côté [AB], on place un point M tel que AM = 8 cm.\nSur le côté [AC], on place un point N tel que AN = 6 cm.\n\nLes droites (MN) and (BC) sont-elles parallèles ?\nOn calcule : AM/AB = 8/12 = 2/3 et AN/AC = 6/9 = 2/3\n\nComme AM/AB = AN/AC, d'après la réciproque du théorème de Thalès, les droites (MN) et (BC) sont parallèles."
                         },
                         media: []
                     },
@@ -1452,6 +1593,7 @@
                 document.getElementById('girls-count').value = courseData.teacherInfo.girlsCount;
                 document.getElementById('teacher-phone').value = courseData.teacherInfo.teacherPhone;
                 document.getElementById('teacher-email').value = courseData.teacherInfo.teacherEmail;
+                document.getElementById('whatsapp-group').value = courseData.teacherInfo.whatsappGroup;
             }
 
             // Sauvegarder les informations de l'enseignant
@@ -1466,6 +1608,7 @@
                 courseData.teacherInfo.girlsCount = parseInt(document.getElementById('girls-count').value);
                 courseData.teacherInfo.teacherPhone = document.getElementById('teacher-phone').value;
                 courseData.teacherInfo.teacherEmail = document.getElementById('teacher-email').value;
+                courseData.teacherInfo.whatsappGroup = document.getElementById('whatsapp-group').value;
             }
 
             // Éditeur de texte enrichi
@@ -1672,12 +1815,6 @@
                         editor.innerHTML = '';
                     }
                 });
-            });
-            
-            // Navigation entre les chapitres
-            document.getElementById('chapter-select').addEventListener('change', function() {
-                const chapterId = this.value;
-                loadChapter(chapterId);
             });
             
             // Navigation via la sidebar
@@ -1920,7 +2057,8 @@
                             boysCount: 0,
                             girlsCount: 0,
                             teacherPhone: "",
-                            teacherEmail: ""
+                            teacherEmail: "",
+                            whatsappGroup: ""
                         },
                         chapters: {
                             "premier-chapitre": {
@@ -2466,6 +2604,40 @@
                 if (e.target === fullscreenModal) {
                     fullscreenModal.style.display = 'none';
                 }
+            });
+            
+            // Widget WhatsApp - modification pour utiliser le groupe WhatsApp
+            const whatsappButton = document.getElementById('whatsapp-chat');
+            const whatsappGroupButton = document.getElementById('join-whatsapp-group');
+            
+            // Modifier le widget WhatsApp pour utiliser le lien du groupe
+            whatsappButton.addEventListener('click', function() {
+                const groupLink = document.getElementById('whatsapp-group').value;
+                if (groupLink) {
+                    window.open(groupLink, '_blank');
+                } else {
+                    alert('Veuillez d\'abord entrer un lien de groupe WhatsApp valide');
+                }
+            });
+            
+            whatsappGroupButton.addEventListener('click', function() {
+                const groupLink = document.getElementById('whatsapp-group').value;
+                if (groupLink) {
+                    window.open(groupLink, '_blank');
+                } else {
+                    alert('Veuillez d\'abord entrer un lien de groupe WhatsApp valide');
+                }
+            });
+            
+            // Nouveaux boutons ajoutés
+            document.getElementById('scientific-formula').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.open('https://mathpix.com/', '_blank');
+            });
+            
+            document.getElementById('screen-sharing').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.open('https://getscreen.me/fr/', '_blank');
             });
             
             // Initialisation finale
