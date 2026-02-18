@@ -1415,6 +1415,12 @@
                 <li><a href="#" id="export-pdf"><i class="fas fa-file-pdf"></i> Exporter en PDF</a></li>
                 <li><a href="#" id="export-html"><i class="fas fa-file-code"></i> Exporter en HTML</a></li>
             </ul>
+
+            <h3><i class="fas fa-external-link-alt"></i> Outils externes</h3>
+            <ul>
+                <li><a href="Géocollege.html" target="_blank"><i class="fas fa-draw-polygon"></i> Géométrie (Géocollege)</a></li>
+                <li><a href="lecteur.html" target="_blank"><i class="fas fa-microchip"></i> Simulation (Lecteur)</a></li>
+            </ul>
         </div>
         
         <div class="main-content">
@@ -2312,6 +2318,18 @@
                                 <p>Créez des exercices interactifs avec correction automatique.</p>
                                 <button onclick="openTool('interactive-exercises')">Ouvrir</button>
                             </div>
+                            <div class="tool-card">
+                                <i class="fas fa-draw-polygon"></i>
+                                <h3>Géométrie</h3>
+                                <p>Accédez à l'outil de géométrie interactif pour construire et manipuler des figures.</p>
+                                <button onclick="openTool('geometrie')">Ouvrir Géocollege</button>
+                            </div>
+                            <div class="tool-card">
+                                <i class="fas fa-microchip"></i>
+                                <h3>Simulation</h3>
+                                <p>Lancez des simulations interactives pour illustrer des concepts scientifiques.</p>
+                                <button onclick="openTool('simulation')">Ouvrir Lecteur</button>
+                            </div>
                         </div>
                     `;
                 } else {
@@ -2353,7 +2371,7 @@
                 preview.innerHTML = previewHTML;
             }
             
-            // Fonction pour ouvrir les outils
+            // Fonction pour ouvrir les outils (modifiée pour inclure les nouveaux boutons)
             window.openTool = function(toolName) {
                 switch(toolName) {
                     case 'formula-editor':
@@ -2377,6 +2395,12 @@
                     case 'interactive-exercises':
                         alert('Créateur d\'exercices interactifs ouvert!');
                         // Ici vous pouvez intégrer un créateur d'exercices interactifs
+                        break;
+                    case 'geometrie':
+                        window.location.href = 'Géocollege.html';
+                        break;
+                    case 'simulation':
+                        window.location.href = 'lecteur.html';
                         break;
                     default:
                         alert('Outil non disponible');
@@ -2919,6 +2943,14 @@
                                 <div class="tool-card">
                                     <h3>Exercices interactifs</h3>
                                     <p>Créez des exercices interactifs avec correction automatique.</p>
+                                </div>
+                                <div class="tool-card">
+                                    <h3>Géométrie</h3>
+                                    <p>Accédez à l'outil de géométrie interactif pour construire et manipuler des figures.</p>
+                                </div>
+                                <div class="tool-card">
+                                    <h3>Simulation</h3>
+                                    <p>Lancez des simulations interactives pour illustrer des concepts scientifiques.</p>
                                 </div>
                             </div>
                         `;
