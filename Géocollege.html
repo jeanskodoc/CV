@@ -1,0 +1,2950 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GéoLab Collège - Laboratoire géométrique avancé</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 5px;
+        }
+
+        .scale-indicator {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            position: relative;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .tool-group {
+            display: flex;
+            gap: 5px;
+            padding: 5px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
+        }
+
+        .tool-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            background: white;
+            color: #2c3e50;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border: 2px solid transparent;
+        }
+
+        .tool-btn:hover {
+            background: #e3f2fd;
+            transform: translateY(-2px);
+        }
+
+        .tool-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #5a67d8;
+        }
+
+        .tool-btn.danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .tool-btn.success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .tool-btn.warning {
+            background: #fbbf24;
+            color: #2c3e50;
+        }
+
+        .main-content {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .canvas-area {
+            flex: 2;
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .canvas-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .canvas-header h3 {
+            color: #2c3e50;
+            font-size: 1.2em;
+        }
+
+        .canvas-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            background: #f8f9fa;
+            color: #2c3e50;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: #e9ecef;
+            transform: scale(1.05);
+        }
+
+        .control-btn.fullscreen-btn {
+            background: #667eea;
+            color: white;
+        }
+
+        .control-btn.fullscreen-btn:hover {
+            background: #5a67d8;
+        }
+
+        .control-btn.exit-fullscreen {
+            background: #f56565;
+            color: white;
+        }
+
+        .control-btn.exit-fullscreen:hover {
+            background: #e53e3e;
+        }
+
+        #mainCanvas {
+            width: 100%;
+            height: auto;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            background: #ffffff;
+            cursor: crosshair;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .canvas-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .mouse-coords {
+            background: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 15px;
+        }
+
+        .panel {
+            flex: 1;
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-height: 800px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            transition: all 0.3s ease;
+        }
+
+        /* Mode plein écran de la zone de construction */
+        .canvas-fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 10000;
+            background: white;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .canvas-fullscreen .canvas-area {
+            height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .canvas-fullscreen #mainCanvas {
+            flex: 1;
+            height: auto;
+            max-height: calc(100vh - 120px);
+            width: 100%;
+        }
+
+        .canvas-fullscreen .panel {
+            display: none;
+        }
+
+        .canvas-fullscreen .main-content {
+            padding: 0;
+        }
+
+        .canvas-fullscreen .toolbar {
+            display: none;
+        }
+
+        .canvas-fullscreen header {
+            display: none;
+        }
+
+        .canvas-fullscreen .status-bar {
+            display: none;
+        }
+
+        .panel-section {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .panel-section h3 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            padding-bottom: 5px;
+            border-bottom: 3px solid #667eea;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tool-info-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .tool-info-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 12px;
+        }
+
+        .tool-info-icon {
+            font-size: 32px;
+            background: rgba(255,255,255,0.2);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+
+        .tool-info-title {
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+
+        .tool-info-definition {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+            border-left: 4px solid #fbbf24;
+        }
+
+        .tool-info-section {
+            margin-bottom: 15px;
+        }
+
+        .tool-info-section-title {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tool-info-properties {
+            list-style: none;
+        }
+
+        .tool-info-properties li {
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 13px;
+        }
+
+        .tool-info-properties li:before {
+            content: "•";
+            position: absolute;
+            left: 5px;
+            color: #fbbf24;
+            font-weight: bold;
+        }
+
+        .tool-info-formula {
+            background: #2c3e50;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            text-align: center;
+            margin: 10px 0;
+            border: 1px solid #fbbf24;
+        }
+
+        .tool-info-example {
+            background: rgba(255,255,255,0.15);
+            padding: 12px;
+            border-radius: 8px;
+            font-style: italic;
+            font-size: 13px;
+            border-left: 4px solid #fbbf24;
+            margin-top: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #a0aec0;
+        }
+
+        .coordinates-panel {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .point-input {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .point-input label {
+            display: block;
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+
+        .point-input input {
+            width: 100%;
+            padding: 5px;
+            border: 2px solid #e9ecef;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .measurements-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .measure-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .measure-label {
+            font-size: 11px;
+            color: #718096;
+            text-transform: uppercase;
+        }
+
+        .measure-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .measure-unit {
+            font-size: 11px;
+            color: #a0aec0;
+        }
+
+        .style-panel {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .style-btn {
+            padding: 8px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            min-width: 40px;
+        }
+
+        .style-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .style-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #5a67d8;
+        }
+
+        .color-picker-mini {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .color-sample {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .color-sample:hover {
+            transform: scale(1.1);
+        }
+
+        .color-sample.selected {
+            border-color: #2c3e50;
+        }
+
+        .construction-list {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .construction-item {
+            background: #f8f9fa;
+            padding: 8px;
+            margin: 4px 0;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .construction-item button {
+            background: none;
+            border: none;
+            color: #f56565;
+            cursor: pointer;
+            padding: 2px 5px;
+            font-size: 14px;
+        }
+
+        .construction-item button:hover {
+            background: #fed7d7;
+            border-radius: 4px;
+        }
+
+        .status-bar {
+            background: #e9ecef;
+            padding: 10px 20px;
+            font-size: 13px;
+            color: #2c3e50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #48bb78;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 11000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .modal-content input, .modal-content select, .modal-content textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .modal-btn.confirm {
+            background: #667eea;
+            color: white;
+        }
+
+        .modal-btn.cancel {
+            background: #e9ecef;
+            color: #2c3e50;
+        }
+
+        .color-picker {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+            margin: 10px 0;
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.selected {
+            border-color: #2c3e50;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .quick-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .quick-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #5a67d8;
+        }
+
+        .simulation-panel {
+            background: #f0f4f8;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .simulation-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .simulation-item:last-child {
+            border-bottom: none;
+        }
+
+        .simulation-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .simulation-value {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .slider {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .font-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .latex-preview {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 18px;
+            text-align: center;
+            border: 2px solid #667eea;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .latex-input {
+            font-family: monospace;
+        }
+
+        /* Style pour le rendu LaTeX */
+        .latex-render {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+        }
+        
+        mjx-container {
+            font-size: 120%;
+        }
+    </style>
+    <!-- Chargement de MathJax avec configuration optimisée -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                packages: ['base', 'ams', 'newcommand']
+            },
+            svg: {
+                fontCache: 'global'
+            },
+            options: {
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady();
+                }
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+    <div class="main-container">
+        <header>
+            <h1>📐 GéoLab Collège - Laboratoire géométrique avancé</h1>
+            <p>Codage, mesures, LaTeX et plus encore</p>
+            <div class="scale-indicator">
+                ⚖️ 1 cm = 20 px | Zone : 30 cm × 20 cm
+            </div>
+        </header>
+
+        <div class="toolbar">
+            <!-- Outils de base -->
+            <div class="tool-group">
+                <button class="tool-btn" onclick="setTool('select')" id="tool-select">🖱️ Sélection</button>
+                <button class="tool-btn" onclick="setTool('point')" id="tool-point">📍 Point</button>
+                <button class="tool-btn" onclick="setTool('line')" id="tool-line">📈 Droite</button>
+                <button class="tool-btn" onclick="setTool('segment')" id="tool-segment">📏 Segment</button>
+                <button class="tool-btn" onclick="setTool('ray')" id="tool-ray">☀️ Demi-droite</button>
+            </div>
+            
+            <!-- Polygones -->
+            <div class="tool-group">
+                <button class="tool-btn" onclick="setTool('triangle')" id="tool-triangle">🔺 Triangle</button>
+                <button class="tool-btn" onclick="setTool('quadrilateral')" id="tool-quadrilateral">🔲 Quadrilatère</button>
+                <button class="tool-btn" onclick="setTool('polygon')" id="tool-polygon">⬢ Polygone</button>
+                <button class="tool-btn" onclick="setTool('circle')" id="tool-circle">⚪ Cercle</button>
+            </div>
+
+            <!-- Droites particulières -->
+            <div class="tool-group">
+                <button class="tool-btn" onclick="setTool('median')" id="tool-median">📊 Médiane</button>
+                <button class="tool-btn" onclick="setTool('bisector')" id="tool-bisector">📐 Bissectrice</button>
+                <button class="tool-btn" onclick="setTool('perpendicular')" id="tool-perpendicular">⟂ Perpendiculaire</button>
+                <button class="tool-btn" onclick="setTool('parallel')" id="tool-parallel">∥ Parallèle</button>
+                <button class="tool-btn" onclick="setTool('midpoint')" id="tool-midpoint">⚫ Milieu</button>
+            </div>
+
+            <!-- Nouveaux outils de mesure -->
+            <div class="tool-group">
+                <button class="tool-btn" onclick="setTool('compass')" id="tool-compass">🧭 Compas</button>
+                <button class="tool-btn" onclick="setTool('eraser')" id="tool-eraser">🧽 Gomme</button>
+                <button class="tool-btn" onclick="setTool('protractor')" id="tool-protractor">📐 Rapporteur</button>
+                <button class="tool-btn" onclick="setTool('setSquare')" id="tool-setSquare">📏 Équerre</button>
+            </div>
+
+            <!-- Outils de codage -->
+            <div class="tool-group">
+                <button class="tool-btn" onclick="setTool('codeLength')" id="tool-codeLength">📏 Coder longueur</button>
+                <button class="tool-btn" onclick="setTool('codeAngle')" id="tool-codeAngle">∠ Coder angle</button>
+                <button class="tool-btn" onclick="setTool('codeRightAngle')" id="tool-codeRightAngle">∟ Angle droit</button>
+                <button class="tool-btn" onclick="setTool('codeParallel')" id="tool-codeParallel">∥ Coder parallèle</button>
+                <button class="tool-btn" onclick="setTool('codePerpendicular')" id="tool-codePerpendicular">⟂ Coder perpendiculaire</button>
+            </div>
+
+            <!-- Outils LaTeX -->
+            <div class="tool-group">
+                <button class="tool-btn" onclick="setTool('latex')" id="tool-latex">📄 LaTeX</button>
+                <button class="tool-btn" onclick="showLatexModal()">📝 Insérer formule</button>
+            </div>
+
+            <!-- Outils de texte et étiquettes -->
+            <div class="tool-group">
+                <button class="tool-btn" onclick="setTool('text')" id="tool-text">📝 Texte</button>
+                <button class="tool-btn" onclick="setTool('label')" id="tool-label">🏷️ Étiquette</button>
+                <button class="tool-btn" onclick="setTool('edit')" id="tool-edit">✏️ Modifier</button>
+            </div>
+
+            <!-- Outils de couleur -->
+            <div class="tool-group">
+                <button class="tool-btn" onclick="setTool('color')" id="tool-color">🎨 Couleur</button>
+                <button class="tool-btn" onclick="setTool('fill')" id="tool-fill">🪣 Remplissage</button>
+                <button class="tool-btn" onclick="setTool('style')" id="tool-style">🖌️ Style</button>
+            </div>
+
+            <!-- Simulations -->
+            <div class="tool-group">
+                <button class="tool-btn" onclick="setTool('simulation')" id="tool-simulation">⚡ Simulation</button>
+                <button class="tool-btn" onclick="showAngleSimulator()">🔄 Angles</button>
+                <button class="tool-btn" onclick="showPythagore()">📐 Pythagore</button>
+            </div>
+
+            <!-- Actions -->
+            <div class="tool-group">
+                <button class="tool-btn success" onclick="showQuickStartModal()">🚀 Démarrage</button>
+                <button class="tool-btn warning" onclick="toggleGrid()">🔲 Grille</button>
+                <button class="tool-btn" onclick="exportAsPNG()">📸 Exporter</button>
+                <button class="tool-btn" onclick="toggleFullscreen()" id="fullscreenBtn">⛶ Plein écran</button>
+                <button class="tool-btn danger" onclick="clearAll()">🗑️ Effacer</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="canvas-area">
+                <div class="canvas-header">
+                    <h3>Zone de construction</h3>
+                    <div class="canvas-controls">
+                        <button class="control-btn" onclick="zoom(0.9)">− Zoom</button>
+                        <button class="control-btn" onclick="zoom(1.1)">+ Zoom</button>
+                        <button class="control-btn" onclick="resetView()">↺ Réinitialiser</button>
+                        <button class="control-btn fullscreen-btn" onclick="toggleCanvasFullscreen()" id="canvasFullscreenBtn" title="Plein écran zone de construction">⛶ Maximiser</button>
+                    </div>
+                </div>
+                <canvas id="mainCanvas" width="900" height="550"></canvas>
+                <div class="canvas-info">
+                    <span class="mouse-coords" id="mouseCoords">x: 0.0 cm, y: 0.0 cm</span>
+                    <span id="canvasScale">Échelle: 100%</span>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="tool-info-box" id="toolInfoBox">
+                    <div class="tool-info-header">
+                        <div class="tool-info-icon" id="toolInfoIcon">🖱️</div>
+                        <div class="tool-info-title" id="toolInfoTitle">Sélection</div>
+                    </div>
+                    <div class="tool-info-definition" id="toolInfoDefinition">
+                        Sélectionner et déplacer des éléments
+                    </div>
+                    <div class="tool-info-section">
+                        <div class="tool-info-section-title">📋 PROPRIÉTÉS</div>
+                        <ul class="tool-info-properties" id="toolInfoProperties"></ul>
+                    </div>
+                    <div class="tool-info-example" id="toolInfoExample"></div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>🎨 Style</h3>
+                    <div class="style-panel">
+                        <div class="color-picker-mini" id="colorPickerMini">
+                            <div class="color-sample selected" style="background:#ff6b6b" onclick="setCurrentColor('#ff6b6b',this)"></div>
+                            <div class="color-sample" style="background:#4ecdc4" onclick="setCurrentColor('#4ecdc4',this)"></div>
+                            <div class="color-sample" style="background:#45b7d1" onclick="setCurrentColor('#45b7d1',this)"></div>
+                            <div class="color-sample" style="background:#96ceb4" onclick="setCurrentColor('#96ceb4',this)"></div>
+                            <div class="color-sample" style="background:#fbbf24" onclick="setCurrentColor('#fbbf24',this)"></div>
+                            <div class="color-sample" style="background:#000000" onclick="setCurrentColor('#000000',this)"></div>
+                        </div>
+                        <select id="lineStyleSelect" onchange="setLineStyle(this.value)" class="style-btn" style="flex:1">
+                            <option value="solid">─ Continu</option>
+                            <option value="dashed">┄ Pointillé</option>
+                            <option value="dotted">⋯ Pointillé fin</option>
+                        </select>
+                        <select id="lineWidthSelect" onchange="setLineWidth(parseInt(this.value))" class="style-btn" style="flex:1">
+                            <option value="1">1 px</option>
+                            <option value="2" selected>2 px</option>
+                            <option value="3">3 px</option>
+                            <option value="4">4 px</option>
+                            <option value="5">5 px</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>📍 Points</h3>
+                    <div id="pointsList" class="empty-state">📍 Aucun point</div>
+                    <button class="tool-btn success" style="width:100%;margin-top:5px" onclick="showPointModal()">➕ Ajouter</button>
+                </div>
+
+                <div class="panel-section">
+                    <h3>📊 Mesures</h3>
+                    <div id="measurements" class="empty-state">Sélectionnez des points</div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>📋 Constructions</h3>
+                    <div class="construction-list" id="constructionList">Aucune construction</div>
+                </div>
+
+                <div class="panel-section" id="simulationPanel" style="display:none">
+                    <h3>⚡ Simulation</h3>
+                    <div id="simulationContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-message">
+                <span class="status-indicator"></span>
+                <span id="statusText">Prêt</span>
+            </div>
+            <div>
+                <span id="pointCount">0 points</span> | 
+                <span id="constructionCount">0 construction</span> |
+                <span id="snapStatus">🔲 Grille: ON</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="pointModal">
+        <div class="modal-content">
+            <h3>📍 Nouveau point</h3>
+            <input type="text" id="newPointName" maxlength="1" placeholder="Lettre (A-Z)">
+            <input type="number" id="newPointX" step="0.1" min="0" max="30" value="10" placeholder="X (0-30 cm)">
+            <input type="number" id="newPointY" step="0.1" min="0" max="20" value="10" placeholder="Y (0-20 cm)">
+            <div class="modal-buttons">
+                <button class="modal-btn confirm" onclick="addNewPoint()">Ajouter</button>
+                <button class="modal-btn cancel" onclick="closeModal('pointModal')">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="lengthModal">
+        <div class="modal-content">
+            <h3>📏 Rayon / Distance</h3>
+            <input type="number" id="modalLength" step="0.1" min="0.5" max="15" value="5">
+            <div class="modal-buttons">
+                <button class="modal-btn confirm" onclick="confirmLength()">OK</button>
+                <button class="modal-btn cancel" onclick="closeModal('lengthModal')">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="textModal">
+        <div class="modal-content">
+            <h3>📝 Ajouter du texte</h3>
+            <textarea id="textContent" rows="3" placeholder="Votre texte..."></textarea>
+            <select id="textFont">
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Comic Sans MS">Comic Sans MS</option>
+            </select>
+            <select id="textSize">
+                <option value="12">12 px</option>
+                <option value="14">14 px</option>
+                <option value="16" selected>16 px</option>
+                <option value="18">18 px</option>
+                <option value="20">20 px</option>
+                <option value="24">24 px</option>
+            </select>
+            <div class="modal-buttons">
+                <button class="modal-btn confirm" onclick="addText()">Ajouter</button>
+                <button class="modal-btn cancel" onclick="closeModal('textModal')">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="latexModal">
+        <div class="modal-content">
+            <h3>📄 Formule LaTeX</h3>
+            <p>Entrez une formule LaTeX (ex: $a^2 + b^2 = c^2$)</p>
+            <input type="text" id="latexInput" class="latex-input" placeholder="$\\frac{3}{4}$ ou $\\angle ABC = 90°$" value="$a^2 + b^2 = c^2$">
+            <div class="latex-preview" id="latexPreview">\(a^2 + b^2 = c^2\)</div>
+            <select id="latexSize">
+                <option value="12">12 px</option>
+                <option value="14">14 px</option>
+                <option value="16" selected>16 px</option>
+                <option value="18">18 px</option>
+                <option value="20">20 px</option>
+                <option value="24">24 px</option>
+                <option value="28">28 px</option>
+                <option value="32">32 px</option>
+            </select>
+            <div class="modal-buttons">
+                <button class="modal-btn confirm" onclick="addLatex()">Ajouter</button>
+                <button class="modal-btn cancel" onclick="closeModal('latexModal')">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="angleSimulatorModal">
+        <div class="modal-content">
+            <h3>🔄 Simulateur d'angles</h3>
+            <p>Ajustez l'angle pour voir ses propriétés</p>
+            <input type="range" id="angleSlider" min="0" max="180" value="90" step="1" class="slider">
+            <div style="text-align:center; margin:20px 0">
+                <span style="font-size:24px; font-weight:bold" id="angleValue">90°</span>
+            </div>
+            <div class="simulation-item">
+                <span class="simulation-label">Type :</span>
+                <span class="simulation-value" id="angleType">Angle droit</span>
+            </div>
+            <div class="simulation-item">
+                <span class="simulation-label">Complément :</span>
+                <span class="simulation-value" id="angleComplement">0°</span>
+            </div>
+            <div class="simulation-item">
+                <span class="simulation-label">Supplément :</span>
+                <span class="simulation-value" id="angleSupplement">90°</span>
+            </div>
+            <button class="modal-btn confirm" onclick="drawSimulatedAngle()">Dessiner cet angle</button>
+            <button class="modal-btn cancel" onclick="closeModal('angleSimulatorModal')">Fermer</button>
+        </div>
+    </div>
+
+    <div class="modal" id="pythagoreModal">
+        <div class="modal-content">
+            <h3>📐 Théorème de Pythagore</h3>
+            <p>\(a^2 + b^2 = c^2\)</p>
+            <div style="display:flex; gap:10px; margin:20px 0">
+                <div style="flex:1">
+                    <label>a (cm)</label>
+                    <input type="number" id="pythagoreA" value="3" step="0.1" min="0.1">
+                </div>
+                <div style="flex:1">
+                    <label>b (cm)</label>
+                    <input type="number" id="pythagoreB" value="4" step="0.1" min="0.1">
+                </div>
+                <div style="flex:1">
+                    <label>c (cm)</label>
+                    <input type="number" id="pythagoreC" value="5" step="0.1" min="0.1">
+                </div>
+            </div>
+            <div class="simulation-item">
+                <span class="simulation-label">\(a^2 + b^2 =\)</span>
+                <span class="simulation-value" id="pythagoreSum">25</span>
+            </div>
+            <div class="simulation-item">
+                <span class="simulation-label">\(c^2 =\)</span>
+                <span class="simulation-value" id="pythagoreCSquare">25</span>
+            </div>
+            <div class="simulation-item">
+                <span class="simulation-label">Vérification :</span>
+                <span class="simulation-value" id="pythagoreCheck">✅ Égalité vérifiée</span>
+            </div>
+            <button class="modal-btn confirm" onclick="drawPythagoreTriangle()">Dessiner le triangle</button>
+            <button class="modal-btn cancel" onclick="closeModal('pythagoreModal')">Fermer</button>
+        </div>
+    </div>
+
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <h3>✏️ Modifier l'élément</h3>
+            <div id="editContent"></div>
+            <div class="modal-buttons">
+                <button class="modal-btn confirm" onclick="applyEdit()">Appliquer</button>
+                <button class="modal-btn cancel" onclick="closeModal('editModal')">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="quickStartModal">
+        <div class="modal-content">
+            <h3>🚀 Démarrage rapide</h3>
+            <div style="display:grid;gap:10px;margin:20px 0">
+                <button class="quick-btn" onclick="startWithTriangle()">🔺 Triangle</button>
+                <button class="quick-btn" onclick="startWithRectangle()">🔲 Rectangle</button>
+                <button class="quick-btn" onclick="startWithCircle()">⚪ Cercle</button>
+                <button class="quick-btn" onclick="startWithPoints()">📍 Points</button>
+                <button class="quick-btn" onclick="startWithPythagore()">📐 Triangle rectangle</button>
+                <button class="quick-btn" onclick="startEmpty()">📄 Vierge</button>
+            </div>
+            <button class="modal-btn cancel" onclick="closeModal('quickStartModal')">Fermer</button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== CONFIGURATION ====================
+        const PIXELS_PER_CM = 20;
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // États globaux
+        let currentTool = 'select';
+        let points = {};
+        let constructions = [];
+        let tempPoints = [];
+        let selectedPoints = [];
+        let pointCounter = 65;
+        let scale = 1;
+        let gridEnabled = true;
+        let snapToGrid = true;
+        let backgroundColor = '#ffffff';
+        let currentColor = '#ff6b6b';
+        let currentLineStyle = 'solid';
+        let currentLineWidth = 2;
+        let isFullscreen = false;
+        let isCanvasFullscreen = false;
+        let ctrlPressed = false;
+        let dragActive = false;
+        let dragStart = { x: 0, y: 0 };
+        let mouseX = 0, mouseY = 0;
+        let selectedElement = null;
+        let compassRadius = 0;
+        let compassCenter = null;
+        let eraserSize = 20;
+
+        // Éléments DOM
+        const mainContainer = document.querySelector('.main-container');
+        const canvasFullscreenBtn = document.getElementById('canvasFullscreenBtn');
+        const latexInput = document.getElementById('latexInput');
+        const latexPreview = document.getElementById('latexPreview');
+
+        // Définitions des outils (simplifiée pour éviter les erreurs)
+        const toolDefinitions = {
+            select: { icon: '🖱️', name: 'Sélection', definition: 'Sélectionner et manipuler les éléments', properties: ['Clic: sélectionne un point', 'Ctrl+Clic: sélection multiple', 'Glisser: déplace', 'Suppr: supprime'], example: 'Cliquez sur un point' },
+            point: { icon: '📍', name: 'Point', definition: 'Position dans le plan', properties: ['Notation: lettre majuscule'], formula: '(x, y) en cm', example: 'Cliquez pour placer un point' },
+            line: { icon: '📈', name: 'Droite', definition: 'Ligne infinie', properties: ['Notation: (AB)'], example: 'Cliquez sur deux points' },
+            segment: { icon: '📏', name: 'Segment', definition: 'Portion de droite avec longueur affichée', properties: ['Notation: [AB]', 'Longueur automatique'], formula: 'AB = √[(xB-xA)²+(yB-yA)²]', example: 'Cliquez sur deux points pour créer un segment' },
+            ray: { icon: '☀️', name: 'Demi-droite', definition: 'Origine + direction', properties: ['Notation: [AB)'], example: 'Cliquez sur origine puis direction' },
+            triangle: { icon: '🔺', name: 'Triangle', definition: 'Polygone à 3 côtés', properties: ['Somme des angles = 180°'], formula: 'Aire = (base×hauteur)/2', example: 'Cliquez sur 3 points' },
+            quadrilateral: { icon: '🔲', name: 'Quadrilatère', definition: 'Polygone à 4 côtés', properties: ['Somme des angles = 360°'], example: 'Cliquez sur 4 points' },
+            polygon: { icon: '⬢', name: 'Polygone', definition: 'Figure fermée', properties: ['n côtés'], formula: 'Somme angles = (n-2)×180°', example: 'Cliquez plusieurs points' },
+            circle: { icon: '⚪', name: 'Cercle', definition: 'Points à distance constante', properties: ['Rayon r'], formula: 'Aire = πr²', example: 'Cliquez sur le centre' },
+            median: { icon: '📊', name: 'Médiane', definition: 'Sommet -> milieu opposé', properties: ['Concourantes'], example: 'Cliquez sur les 3 sommets' },
+            bisector: { icon: '📐', name: 'Bissectrice', definition: 'Coupe un angle en deux', properties: ['Équidistance'], example: 'Cliquez sur 3 points' },
+            perpendicular: { icon: '⟂', name: 'Perpendiculaire', definition: 'Angle droit', properties: ['Angle = 90°'], example: 'Cliquez sur 2 points puis point' },
+            parallel: { icon: '∥', name: 'Parallèle', definition: 'Ne se coupent jamais', properties: ['Thalès'], example: 'Cliquez sur 2 points puis point' },
+            midpoint: { icon: '⚫', name: 'Milieu', definition: 'Équidistant', properties: ['AM = MB'], formula: 'M = ((xA+xB)/2, (yA+yB)/2)', example: 'Cliquez sur 2 points' },
+            angle: { icon: '∠', name: 'Angle', definition: 'Mesure', properties: ['Aigu', 'Droit', 'Obtus'], example: 'Cliquez sur 3 points' },
+            distance: { icon: '📐', name: 'Distance', definition: 'Longueur', properties: ['Positive'], formula: '√[(Δx)²+(Δy)²]', example: 'Cliquez sur 2 points' },
+            area: { icon: '📦', name: 'Aire', definition: 'Surface', properties: ['c²', 'L×l', 'b×h/2', 'πr²'], example: 'Cliquez sur les sommets' },
+            symmetry: { icon: '🪞', name: 'Symétrie', definition: 'Image miroir', properties: ['Axiale'], example: 'Cliquez sur axe puis point' },
+            compass: { icon: '🧭', name: 'Compas', definition: 'Trace un cercle', properties: ['Rayon réglable avec molette'], example: 'Cliquez pour le centre, molette pour rayon' },
+            eraser: { icon: '🧽', name: 'Gomme', definition: 'Efface', properties: ['Cliquez sur élément'], example: 'Cliquez sur un point ou segment' },
+            protractor: { icon: '📐', name: 'Rapporteur', definition: 'Mesure les angles', properties: ['Mesure précise'], example: 'Cliquez sur 3 points' },
+            setSquare: { icon: '📏', name: 'Équerre', definition: 'Angle droit', properties: ['90°'], example: 'Cliquez sur un point' },
+            codeLength: { icon: '📏', name: 'Coder longueur', definition: 'Affiche la mesure avec traits', properties: ['Traits de codage', 'Valeur numérique'], example: 'Cliquez sur un segment' },
+            codeAngle: { icon: '∠', name: 'Coder angle', definition: 'Affiche la mesure', properties: ['Arc coloré', 'Valeur en degrés'], example: 'Cliquez sur 3 points' },
+            codeRightAngle: { icon: '∟', name: 'Angle droit', definition: 'Marque un angle droit', properties: ['Symbole ∟', 'Petit carré'], example: 'Cliquez sur 3 points' },
+            codeParallel: { icon: '∥', name: 'Coder parallèle', definition: 'Marque des parallèles', properties: ['Flèches parallèles'], example: 'Cliquez sur 4 points' },
+            codePerpendicular: { icon: '⟂', name: 'Coder perpendiculaire', definition: 'Marque la perpendicularité', properties: ['Symbole ⟂'], example: 'Cliquez sur 4 points' },
+            latex: { icon: '📄', name: 'LaTeX', definition: 'Formule mathématique', properties: ['Rendu professionnel'], example: 'Entrez $\\frac{a}{b}$' },
+            text: { icon: '📝', name: 'Texte', definition: 'Ajoute du texte', properties: ['Police, taille'], example: 'Cliquez pour placer du texte' },
+            label: { icon: '🏷️', name: 'Étiquette', definition: 'Modifie l\'étiquette', properties: ['Nom'], example: 'Cliquez sur un point' },
+            edit: { icon: '✏️', name: 'Modifier', definition: 'Modifie les propriétés', properties: ['Couleur', 'Style'], example: 'Cliquez sur un élément' },
+            color: { icon: '🎨', name: 'Couleur', definition: 'Change la couleur', properties: ['Trait', 'Remplissage'], example: 'Cliquez sur un élément' },
+            fill: { icon: '🪣', name: 'Remplissage', definition: 'Remplit une surface', properties: ['Couleur de fond'], example: 'Cliquez sur un polygone' },
+            style: { icon: '🖌️', name: 'Style', definition: 'Modifie le style', properties: ['Continu', 'Pointillé'], example: 'Cliquez sur un élément' },
+            simulation: { icon: '⚡', name: 'Simulation', definition: 'Simule des phénomènes', properties: ['Angles', 'Pythagore'], example: 'Explorez les théorèmes' }
+        };
+
+        // ==================== FONCTIONS UTILITAIRES ====================
+        function pxToCm(px) { 
+            return (px / PIXELS_PER_CM).toFixed(1); 
+        }
+        
+        function cmToPx(cm) { 
+            return cm * PIXELS_PER_CM; 
+        }
+        
+        function distance(p1, p2) { 
+            return Math.hypot(p2.x - p1.x, p2.y - p1.y); 
+        }
+        
+        function getRandomColor() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dfe6e9'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function calculateAngle(p1, p2, p3) {
+            const v1 = { x: p1.x - p2.x, y: p1.y - p2.y };
+            const v2 = { x: p3.x - p2.x, y: p3.y - p2.y };
+            const dot = v1.x * v2.x + v1.y * v2.y;
+            const mag1 = Math.hypot(v1.x, v1.y);
+            const mag2 = Math.hypot(v2.x, v2.y);
+            if (mag1 === 0 || mag2 === 0) return 0;
+            const cos = dot / (mag1 * mag2);
+            return Math.acos(Math.max(-1, Math.min(1, cos))) * 180 / Math.PI;
+        }
+
+        function calculateArea(points) {
+            if (points.length < 3) return 0;
+            let area = 0;
+            for (let i = 0; i < points.length; i++) {
+                const j = (i + 1) % points.length;
+                area += points[i].x * points[j].y - points[j].x * points[i].y;
+            }
+            return Math.abs(area) / 2 / (PIXELS_PER_CM * PIXELS_PER_CM);
+        }
+
+        function findMidpoint(p1, p2) {
+            return { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 };
+        }
+
+        function findBisectorPoint(p1, p2, p3, dist = 100) {
+            const v1 = { x: p1.x - p2.x, y: p1.y - p2.y };
+            const v2 = { x: p3.x - p2.x, y: p3.y - p2.y };
+            const len1 = Math.hypot(v1.x, v1.y);
+            const len2 = Math.hypot(v2.x, v2.y);
+            if (len1 === 0 || len2 === 0) return p2;
+            const u1 = { x: v1.x/len1, y: v1.y/len1 };
+            const u2 = { x: v2.x/len2, y: v2.y/len2 };
+            return { x: p2.x + (u1.x + u2.x) * dist, y: p2.y + (u1.y + u2.y) * dist };
+        }
+
+        function findPerpendicularPoint(p, p1, p2, dist = 100) {
+            const dx = p2.x - p1.x, dy = p2.y - p1.y;
+            const len = Math.hypot(dx, dy);
+            if (len === 0) return p;
+            return { x: p.x - dy/len * dist, y: p.y + dx/len * dist };
+        }
+
+        function findParallelPoint(p, p1, p2, dist = 100) {
+            const dx = p2.x - p1.x, dy = p2.y - p1.y;
+            const len = Math.hypot(dx, dy);
+            if (len === 0) return p;
+            return { x: p.x + dx/len * dist, y: p.y + dy/len * dist };
+        }
+
+        function findSymmetryPoint(p, p1, p2) {
+            const dx = p2.x - p1.x, dy = p2.y - p1.y;
+            const len = Math.hypot(dx, dy);
+            if (len === 0) return p;
+            const u = { x: dx/len, y: dy/len };
+            const v = { x: p.x - p1.x, y: p.y - p1.y };
+            const dot = v.x * u.x + v.y * u.y;
+            const proj = { x: p1.x + dot * u.x, y: p1.y + dot * u.y };
+            return { x: 2 * proj.x - p.x, y: 2 * proj.y - p.y };
+        }
+
+        // ==================== STYLE ====================
+        function setCurrentColor(color, element) {
+            currentColor = color;
+            document.querySelectorAll('.color-sample').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function setLineStyle(style) {
+            currentLineStyle = style;
+        }
+
+        function setLineWidth(width) {
+            currentLineWidth = width;
+        }
+
+        // ==================== MODE PLEIN ÉCRAN ====================
+        function toggleCanvasFullscreen() {
+            if (!isCanvasFullscreen) {
+                mainContainer.classList.add('canvas-fullscreen');
+                if (canvasFullscreenBtn) {
+                    canvasFullscreenBtn.textContent = '✕ Quitter';
+                    canvasFullscreenBtn.classList.remove('fullscreen-btn');
+                    canvasFullscreenBtn.classList.add('exit-fullscreen');
+                    canvasFullscreenBtn.title = 'Quitter le plein écran';
+                }
+                isCanvasFullscreen = true;
+                setTimeout(() => { draw(); }, 100);
+            } else {
+                mainContainer.classList.remove('canvas-fullscreen');
+                if (canvasFullscreenBtn) {
+                    canvasFullscreenBtn.textContent = '⛶ Maximiser';
+                    canvasFullscreenBtn.classList.remove('exit-fullscreen');
+                    canvasFullscreenBtn.classList.add('fullscreen-btn');
+                    canvasFullscreenBtn.title = 'Plein écran zone de construction';
+                }
+                isCanvasFullscreen = false;
+                setTimeout(() => { draw(); }, 100);
+            }
+        }
+
+        // ==================== MISE À JOUR INTERFACE ====================
+        function updateToolInfo(tool) {
+            const def = toolDefinitions[tool] || toolDefinitions.select;
+            const iconEl = document.getElementById('toolInfoIcon');
+            const titleEl = document.getElementById('toolInfoTitle');
+            const defEl = document.getElementById('toolInfoDefinition');
+            const propsEl = document.getElementById('toolInfoProperties');
+            const exampleEl = document.getElementById('toolInfoExample');
+            
+            if (iconEl) iconEl.textContent = def.icon;
+            if (titleEl) titleEl.textContent = def.name;
+            if (defEl) defEl.textContent = def.definition;
+            
+            if (propsEl) {
+                propsEl.innerHTML = '';
+                if (def.properties) {
+                    def.properties.forEach(p => {
+                        const li = document.createElement('li');
+                        li.textContent = p;
+                        propsEl.appendChild(li);
+                    });
+                }
+            }
+            
+            if (exampleEl) {
+                exampleEl.textContent = '✨ ' + (def.example || '');
+            }
+        }
+
+        function updatePointsList() {
+            const container = document.getElementById('pointsList');
+            if (!container) return;
+            
+            if (Object.keys(points).length === 0) {
+                container.innerHTML = '<div class="empty-state">📍 Aucun point</div>';
+                return;
+            }
+            let html = '<div class="coordinates-panel">';
+            Object.entries(points).sort().forEach(([label, p]) => {
+                html += `
+                    <div class="point-input">
+                        <label style="color:${p.color || '#000'}">${label}</label>
+                        <input type="text" value="${pxToCm(p.x)},${pxToCm(p.y)}" 
+                               onchange="updatePoint('${label}', this.value)">
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+            const pointCountEl = document.getElementById('pointCount');
+            if (pointCountEl) pointCountEl.textContent = Object.keys(points).length + ' points';
+        }
+
+        function updatePoint(label, value) {
+            try {
+                const [x, y] = value.split(',').map(parseFloat);
+                if (!isNaN(x) && !isNaN(y)) {
+                    points[label].x = cmToPx(Math.max(0, Math.min(30, x)));
+                    points[label].y = cmToPx(Math.max(0, Math.min(20, y)));
+                    draw();
+                }
+            } catch (e) { alert('Format: x,y (ex: 5,2.5)'); }
+        }
+
+        function updateMeasurements() {
+            const container = document.getElementById('measurements');
+            if (!container) return;
+            
+            if (selectedPoints.length === 2) {
+                const p1 = points[selectedPoints[0]];
+                const p2 = points[selectedPoints[1]];
+                if (p1 && p2) {
+                    const d = distance(p1, p2);
+                    container.innerHTML = `<div class="measure-card"><div class="measure-label">Distance ${selectedPoints[0]}${selectedPoints[1]}</div><div class="measure-value">${pxToCm(d)}</div><div class="measure-unit">cm</div></div>`;
+                }
+            } else if (selectedPoints.length === 3) {
+                const p1 = points[selectedPoints[0]];
+                const p2 = points[selectedPoints[1]];
+                const p3 = points[selectedPoints[2]];
+                if (p1 && p2 && p3) {
+                    const angle = calculateAngle(p1, p2, p3);
+                    container.innerHTML = `<div class="measure-card"><div class="measure-label">Angle</div><div class="measure-value">${angle.toFixed(1)}</div><div class="measure-unit">°</div></div>`;
+                }
+            } else {
+                container.innerHTML = '<div class="empty-state">📐 Sélectionnez 2 ou 3 points</div>';
+            }
+        }
+
+        function updateConstructionList() {
+            const list = document.getElementById('constructionList');
+            if (!list) return;
+            
+            if (constructions.length === 0) {
+                list.innerHTML = '<p style="text-align:center;color:#a0aec0">Aucune construction</p>';
+                return;
+            }
+            list.innerHTML = constructions.map((c, i) => {
+                let icon = '📌';
+                if (c.type === 'angle') icon = '∠';
+                else if (c.type === 'codeLength') icon = '📏';
+                else if (c.type === 'codeAngle') icon = '∠';
+                else if (c.type === 'codeRightAngle') icon = '∟';
+                else if (c.type === 'codeParallel') icon = '∥';
+                else if (c.type === 'codePerpendicular') icon = '⟂';
+                else if (c.type === 'latex') icon = '📄';
+                else if (c.type === 'segment') icon = '📏';
+                return `
+                    <div class="construction-item">
+                        <span>${icon} ${c.type} ${c.text ? ': "' + c.text + '"' : ''}</span>
+                        <button onclick="removeConstruction(${i})">🗑️</button>
+                    </div>
+                `;
+            }).join('');
+            const countEl = document.getElementById('constructionCount');
+            if (countEl) {
+                countEl.textContent = constructions.length + ' construction' + (constructions.length > 1 ? 's' : '');
+            }
+        }
+
+        function removeConstruction(index) {
+            constructions.splice(index, 1);
+            draw();
+        }
+
+        function updateStatus(msg) {
+            const statusEl = document.getElementById('statusText');
+            if (statusEl) statusEl.textContent = msg;
+        }
+
+        // ==================== DESSIN ====================
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = backgroundColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (gridEnabled) {
+                ctx.strokeStyle = '#e9ecef';
+                ctx.lineWidth = 0.5;
+                for (let x = 0; x <= canvas.width; x += PIXELS_PER_CM) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, canvas.height);
+                    ctx.strokeStyle = x % (PIXELS_PER_CM*5) === 0 ? '#cbd5e0' : '#e9ecef';
+                    ctx.stroke();
+                }
+                for (let y = 0; y <= canvas.height; y += PIXELS_PER_CM) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(canvas.width, y);
+                    ctx.strokeStyle = y % (PIXELS_PER_CM*5) === 0 ? '#cbd5e0' : '#e9ecef';
+                    ctx.stroke();
+                }
+            }
+
+            ctx.save();
+            ctx.translate(canvas.width/2, canvas.height/2);
+            ctx.scale(scale, scale);
+            ctx.translate(-canvas.width/2, -canvas.height/2);
+
+            // Constructions
+            constructions.forEach(c => {
+                ctx.save();
+                ctx.strokeStyle = c.color || '#667eea';
+                ctx.lineWidth = c.lineWidth || currentLineWidth;
+                ctx.setLineDash(c.dashed ? (c.dashStyle === 'dotted' ? [2,4] : [8,5]) : []);
+
+                if (c.type === 'line' || c.type === 'ray' || c.type === 'segment' || c.type === 'distance' || 
+                    c.type === 'median' || c.type === 'bisector' || c.type === 'perpendicular' || c.type === 'parallel') {
+                    if (c.p1 && c.p2) {
+                        if (c.type === 'line') {
+                            const dx = c.p2.x - c.p1.x, dy = c.p2.y - c.p1.y;
+                            const len = Math.hypot(dx, dy);
+                            if (len > 0) {
+                                const dir = { x: dx/len, y: dy/len };
+                                ctx.beginPath();
+                                ctx.moveTo(c.p1.x - dir.x*1000, c.p1.y - dir.y*1000);
+                                ctx.lineTo(c.p2.x + dir.x*1000, c.p2.y + dir.y*1000);
+                                ctx.stroke();
+                            }
+                        } else if (c.type === 'ray') {
+                            const dx = c.p2.x - c.p1.x, dy = c.p2.y - c.p1.y;
+                            const len = Math.hypot(dx, dy);
+                            if (len > 0) {
+                                const dir = { x: dx/len, y: dy/len };
+                                ctx.beginPath();
+                                ctx.moveTo(c.p1.x, c.p1.y);
+                                ctx.lineTo(c.p1.x + dir.x*500, c.p1.y + dir.y*500);
+                                ctx.stroke();
+                            }
+                        } else {
+                            // Segment, distance, etc.
+                            ctx.beginPath();
+                            ctx.moveTo(c.p1.x, c.p1.y);
+                            ctx.lineTo(c.p2.x, c.p2.y);
+                            ctx.stroke();
+                            
+                            // Afficher la longueur pour les segments et distances
+                            if ((c.type === 'segment' || c.type === 'distance') && c.showLength !== false) {
+                                const mid = { x: (c.p1.x + c.p2.x)/2, y: (c.p1.y + c.p2.y)/2 };
+                                const length = distance(c.p1, c.p2);
+                                
+                                // Dessiner un fond blanc pour meilleure lisibilité
+                                ctx.save();
+                                ctx.shadowBlur = 0;
+                                ctx.fillStyle = 'white';
+                                ctx.font = 'bold 12px Arial';
+                                const text = `${pxToCm(length)} cm`;
+                                const metrics = ctx.measureText(text);
+                                const padding = 4;
+                                ctx.fillRect(mid.x - metrics.width/2 - padding, mid.y - 20, metrics.width + padding*2, 20);
+                                
+                                ctx.fillStyle = c.color || '#ff6b6b';
+                                ctx.font = 'bold 12px Arial';
+                                ctx.fillText(text, mid.x - metrics.width/2, mid.y - 8);
+                                ctx.restore();
+                            }
+                        }
+                    }
+                } else if (c.type === 'polygon' || c.type === 'area') {
+                    if (c.points && c.points.length >= 3) {
+                        ctx.beginPath();
+                        ctx.moveTo(c.points[0].x, c.points[0].y);
+                        for (let i=1; i<c.points.length; i++) ctx.lineTo(c.points[i].x, c.points[i].y);
+                        ctx.closePath();
+                        ctx.stroke();
+                        if (c.fill) {
+                            ctx.fillStyle = c.fill;
+                            ctx.fill();
+                        }
+                        if (c.type === 'area') {
+                            const area = calculateArea(c.points);
+                            const center = c.points.reduce((a,p)=>({x:a.x+p.x, y:a.y+p.y}), {x:0,y:0});
+                            center.x /= c.points.length; center.y /= c.points.length;
+                            
+                            // Fond blanc pour lisibilité
+                            ctx.save();
+                            ctx.shadowBlur = 0;
+                            ctx.fillStyle = 'white';
+                            ctx.font = 'bold 12px Arial';
+                            const text = `Aire: ${area.toFixed(1)} cm²`;
+                            const metrics = ctx.measureText(text);
+                            ctx.fillRect(center.x - metrics.width/2 - 4, center.y - 20, metrics.width + 8, 20);
+                            
+                            ctx.fillStyle = '#2c3e50';
+                            ctx.font = 'bold 12px Arial';
+                            ctx.fillText(text, center.x - metrics.width/2, center.y - 8);
+                            ctx.restore();
+                        }
+                    }
+                } else if (c.type === 'circle') {
+                    if (c.center && c.radius) {
+                        ctx.beginPath();
+                        ctx.arc(c.center.x, c.center.y, c.radius, 0, 2*Math.PI);
+                        ctx.stroke();
+                        if (c.fill) {
+                            ctx.fillStyle = c.fill;
+                            ctx.fill();
+                        }
+                        
+                        // Afficher le rayon
+                        ctx.save();
+                        ctx.shadowBlur = 0;
+                        ctx.fillStyle = 'white';
+                        ctx.font = 'bold 12px Arial';
+                        const text = `r = ${pxToCm(c.radius)} cm`;
+                        const metrics = ctx.measureText(text);
+                        ctx.fillRect(c.center.x + c.radius/2 - metrics.width/2 - 4, c.center.y - 20, metrics.width + 8, 20);
+                        
+                        ctx.fillStyle = c.color || '#2c3e50';
+                        ctx.font = 'bold 12px Arial';
+                        ctx.fillText(text, c.center.x + c.radius/2 - metrics.width/2, c.center.y - 8);
+                        ctx.restore();
+                    }
+                } else if (c.type === 'midpoint' && c.point) {
+                    ctx.shadowColor = 'rgba(0,0,0,0.2)';
+                    ctx.shadowBlur = 5;
+                    ctx.beginPath();
+                    ctx.fillStyle = c.color || '#fbbf24';
+                    ctx.arc(c.point.x, c.point.y, 5, 0, 2*Math.PI);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.strokeStyle = 'white';
+                    ctx.lineWidth = 2;
+                    ctx.arc(c.point.x, c.point.y, 5, 0, 2*Math.PI);
+                    ctx.stroke();
+                    ctx.fillStyle = '#2d3748';
+                    ctx.font = 'bold 14px "Segoe UI"';
+                    ctx.fillText(c.label || 'M', c.point.x+12, c.point.y-12);
+                } else if (c.type === 'angle' && c.p1 && c.p2 && c.p3) {
+                    const v1 = { x: c.p1.x - c.p2.x, y: c.p1.y - c.p2.y };
+                    const v2 = { x: c.p3.x - c.p2.x, y: c.p3.y - c.p2.y };
+                    const a1 = Math.atan2(v1.y, v1.x);
+                    const a2 = Math.atan2(v2.y, v2.x);
+                    ctx.beginPath();
+                    ctx.arc(c.p2.x, c.p2.y, 40, a1, a2, a2 < a1);
+                    ctx.strokeStyle = c.color || '#ff6b6b';
+                    ctx.stroke();
+                    const angle = calculateAngle(c.p1, c.p2, c.p3);
+                    const mid = (a1 + a2) / 2;
+                    
+                    // Fond blanc pour lisibilité
+                    ctx.save();
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 12px Arial';
+                    const text = angle.toFixed(0) + '°';
+                    const metrics = ctx.measureText(text);
+                    const x = c.p2.x + Math.cos(mid)*55;
+                    const y = c.p2.y + Math.sin(mid)*55;
+                    ctx.fillRect(x - metrics.width/2 - 4, y - 20, metrics.width + 8, 20);
+                    
+                    ctx.fillStyle = '#2c3e50';
+                    ctx.font = 'bold 12px Arial';
+                    ctx.fillText(text, x - metrics.width/2, y - 8);
+                    ctx.restore();
+                } else if (c.type === 'codeLength') {
+                    if (c.p1 && c.p2) {
+                        const mid = findMidpoint(c.p1, c.p2);
+                        const length = distance(c.p1, c.p2);
+                        
+                        // Fond blanc pour le texte
+                        ctx.save();
+                        ctx.shadowBlur = 0;
+                        ctx.fillStyle = 'white';
+                        ctx.font = 'bold 14px Arial';
+                        const text = `${pxToCm(length)} cm`;
+                        const metrics = ctx.measureText(text);
+                        ctx.fillRect(mid.x - metrics.width/2 - 4, mid.y - 25, metrics.width + 8, 22);
+                        
+                        ctx.fillStyle = c.color || '#ff6b6b';
+                        ctx.font = 'bold 14px Arial';
+                        ctx.fillText(text, mid.x - metrics.width/2, mid.y - 10);
+                        
+                        // Dessiner des petits traits de codage
+                        const dx = c.p2.x - c.p1.x;
+                        const dy = c.p2.y - c.p1.y;
+                        const perp = { x: -dy, y: dx };
+                        const lenPerp = Math.hypot(perp.x, perp.y);
+                        if (lenPerp > 0) {
+                            perp.x /= lenPerp;
+                            perp.y /= lenPerp;
+                            
+                            for (let i = -1; i <= 1; i+=2) {
+                                const t1 = 0.3 + i * 0.1;
+                                const t2 = 0.7 + i * 0.1;
+                                const p1 = { x: c.p1.x + (c.p2.x - c.p1.x) * t1, y: c.p1.y + (c.p2.y - c.p1.y) * t1 };
+                                const p2 = { x: c.p1.x + (c.p2.x - c.p1.x) * t2, y: c.p1.y + (c.p2.y - c.p1.y) * t2 };
+                                
+                                ctx.beginPath();
+                                ctx.moveTo(p1.x + perp.x * 8, p1.y + perp.y * 8);
+                                ctx.lineTo(p1.x - perp.x * 8, p1.y - perp.y * 8);
+                                ctx.strokeStyle = c.color || '#ff6b6b';
+                                ctx.lineWidth = 2;
+                                ctx.stroke();
+                            }
+                        }
+                        ctx.restore();
+                    }
+                } else if (c.type === 'codeAngle' && c.p1 && c.p2 && c.p3) {
+                    const v1 = { x: c.p1.x - c.p2.x, y: c.p1.y - c.p2.y };
+                    const v2 = { x: c.p3.x - c.p2.x, y: c.p3.y - c.p2.y };
+                    const a1 = Math.atan2(v1.y, v1.x);
+                    const a2 = Math.atan2(v2.y, v2.x);
+                    ctx.beginPath();
+                    ctx.arc(c.p2.x, c.p2.y, 30, a1, a2, a2 < a1);
+                    ctx.strokeStyle = c.color || '#ff6b6b';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    const angle = calculateAngle(c.p1, c.p2, c.p3);
+                    const mid = (a1 + a2) / 2;
+                    
+                    // Fond blanc pour lisibilité
+                    ctx.save();
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 14px Arial';
+                    const text = angle.toFixed(0) + '°';
+                    const metrics = ctx.measureText(text);
+                    const x = c.p2.x + Math.cos(mid)*45;
+                    const y = c.p2.y + Math.sin(mid)*45;
+                    ctx.fillRect(x - metrics.width/2 - 4, y - 20, metrics.width + 8, 20);
+                    
+                    ctx.fillStyle = c.color || '#ff6b6b';
+                    ctx.font = 'bold 14px Arial';
+                    ctx.fillText(text, x - metrics.width/2, y - 8);
+                    ctx.restore();
+                } else if (c.type === 'codeRightAngle' && c.p1 && c.p2 && c.p3) {
+                    // Dessiner un carré dans l'angle droit
+                    const size = 15;
+                    const dir1 = { x: c.p1.x - c.p2.x, y: c.p1.y - c.p2.y };
+                    const dir2 = { x: c.p3.x - c.p2.x, y: c.p3.y - c.p2.y };
+                    const len1 = Math.hypot(dir1.x, dir1.y);
+                    const len2 = Math.hypot(dir2.x, dir2.y);
+                    
+                    if (len1 > 0 && len2 > 0) {
+                        const u1 = { x: dir1.x/len1 * size, y: dir1.y/len1 * size };
+                        const u2 = { x: dir2.x/len2 * size, y: dir2.y/len2 * size };
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(c.p2.x + u1.x, c.p2.y + u1.y);
+                        ctx.lineTo(c.p2.x + u1.x + u2.x, c.p2.y + u1.y + u2.y);
+                        ctx.lineTo(c.p2.x + u2.x, c.p2.y + u2.y);
+                        ctx.strokeStyle = c.color || '#2c3e50';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    }
+                } else if (c.type === 'codeParallel') {
+                    if (c.p1 && c.p2) {
+                        const dx = c.p2.x - c.p1.x;
+                        const dy = c.p2.y - c.p1.y;
+                        const perp = { x: -dy, y: dx };
+                        const lenPerp = Math.hypot(perp.x, perp.y);
+                        if (lenPerp > 0) {
+                            perp.x /= lenPerp;
+                            perp.y /= lenPerp;
+                            
+                            for (let i = -1; i <= 1; i+=2) {
+                                const offset = 15 * i;
+                                const mid = findMidpoint(c.p1, c.p2);
+                                
+                                ctx.beginPath();
+                                ctx.moveTo(mid.x + perp.x * offset - perp.y * 10, mid.y + perp.y * offset + perp.x * 10);
+                                ctx.lineTo(mid.x + perp.x * offset + perp.y * 10, mid.y + perp.y * offset - perp.x * 10);
+                                ctx.strokeStyle = c.color || '#2c3e50';
+                                ctx.lineWidth = 2;
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                } else if (c.type === 'codePerpendicular') {
+                    if (c.p1 && c.p2 && c.p3 && c.p4) {
+                        const inter = findIntersection(c.p1, c.p2, c.p3, c.p4);
+                        if (inter) {
+                            const size = 15;
+                            ctx.beginPath();
+                            ctx.moveTo(inter.x - size, inter.y - size);
+                            ctx.lineTo(inter.x - size, inter.y);
+                            ctx.lineTo(inter.x, inter.y);
+                            ctx.strokeStyle = c.color || '#2c3e50';
+                            ctx.lineWidth = 2;
+                            ctx.stroke();
+                        }
+                    }
+                } else if (c.type === 'latex') {
+                    ctx.font = `${c.fontSize || 16}px 'Times New Roman', serif`;
+                    ctx.fillStyle = c.color || '#000';
+                    // Nettoyer la formule pour l'affichage
+                    let formula = c.text || '';
+                    formula = formula.replace(/^\$|\$$/g, '');
+                    
+                    // Fond blanc pour lisibilité
+                    ctx.save();
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = 'white';
+                    const metrics = ctx.measureText(formula);
+                    ctx.fillRect(c.x - metrics.width/2 - 4, c.y - 20, metrics.width + 8, 22);
+                    
+                    ctx.fillStyle = c.color || '#000';
+                    ctx.font = `${c.fontSize || 16}px 'Times New Roman', serif`;
+                    ctx.fillText(formula, c.x - metrics.width/2, c.y - 5);
+                    ctx.restore();
+                } else if (c.type === 'text') {
+                    ctx.font = `${c.fontSize || 16}px ${c.font || 'Arial'}`;
+                    ctx.fillStyle = c.color || '#000';
+                    
+                    // Fond blanc pour lisibilité
+                    ctx.save();
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = 'white';
+                    const metrics = ctx.measureText(c.text);
+                    ctx.fillRect(c.x - metrics.width/2 - 4, c.y - 20, metrics.width + 8, 22);
+                    
+                    ctx.fillStyle = c.color || '#000';
+                    ctx.font = `${c.fontSize || 16}px ${c.font || 'Arial'}`;
+                    ctx.fillText(c.text, c.x - metrics.width/2, c.y - 5);
+                    ctx.restore();
+                } else if (c.type === 'symmetry') {
+                    if (c.axis) {
+                        ctx.setLineDash([5,3]);
+                        ctx.strokeStyle = '#999';
+                        ctx.beginPath();
+                        ctx.moveTo(c.axis.p1.x, c.axis.p1.y);
+                        ctx.lineTo(c.axis.p2.x, c.axis.p2.y);
+                        ctx.stroke();
+                    }
+                    if (c.point) {
+                        ctx.shadowColor = 'rgba(0,0,0,0.2)';
+                        ctx.shadowBlur = 5;
+                        ctx.beginPath();
+                        ctx.fillStyle = c.color || '#96ceb4';
+                        ctx.arc(c.point.x, c.point.y, 6, 0, 2*Math.PI);
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                        ctx.strokeStyle = 'white';
+                        ctx.lineWidth = 2;
+                        ctx.arc(c.point.x, c.point.y, 6, 0, 2*Math.PI);
+                        ctx.stroke();
+                        ctx.fillStyle = '#2d3748';
+                        ctx.font = 'bold 14px "Segoe UI"';
+                        ctx.fillText(c.label || 'S', c.point.x+12, c.point.y-12);
+                    }
+                }
+                ctx.restore();
+            });
+
+            // Points
+            Object.entries(points).forEach(([label, p]) => {
+                ctx.shadowColor = 'rgba(0,0,0,0.2)';
+                ctx.shadowBlur = 5;
+                ctx.beginPath();
+                ctx.fillStyle = selectedPoints.includes(label) ? '#fbbf24' : (p.color || '#ff6b6b');
+                ctx.arc(p.x, p.y, selectedPoints.includes(label) ? 8 : 6, 0, 2*Math.PI);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 2;
+                ctx.arc(p.x, p.y, selectedPoints.includes(label) ? 8 : 6, 0, 2*Math.PI);
+                ctx.stroke();
+                ctx.fillStyle = '#2d3748';
+                ctx.font = 'bold 14px "Segoe UI"';
+                ctx.fillText(label, p.x+12, p.y-12);
+            });
+
+            // Points temporaires
+            tempPoints.forEach((p, i) => {
+                ctx.shadowColor = 'rgba(0,0,0,0.2)';
+                ctx.shadowBlur = 5;
+                ctx.beginPath();
+                ctx.fillStyle = '#fbbf24';
+                ctx.arc(p.x, p.y, 8, 0, 2*Math.PI);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 2;
+                ctx.arc(p.x, p.y, 8, 0, 2*Math.PI);
+                ctx.stroke();
+                ctx.fillStyle = '#2d3748';
+                ctx.font = 'bold 14px "Segoe UI"';
+                ctx.fillText((i+1).toString(), p.x+12, p.y-12);
+            });
+
+            // Ligne temporaire
+            if (tempPoints.length === 1 && (currentTool === 'line' || currentTool === 'ray' || currentTool === 'segment' || currentTool === 'distance' || currentTool === 'compass')) {
+                ctx.save();
+                ctx.strokeStyle = '#fbbf24';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5,5]);
+                ctx.beginPath();
+                ctx.moveTo(tempPoints[0].x, tempPoints[0].y);
+                ctx.lineTo(mouseX, mouseY);
+                ctx.stroke();
+
+                if (currentTool === 'compass') {
+                    const radius = distance(tempPoints[0], {x: mouseX, y: mouseY});
+                    ctx.beginPath();
+                    ctx.arc(tempPoints[0].x, tempPoints[0].y, radius, 0, 2*Math.PI);
+                    ctx.strokeStyle = '#fbbf24';
+                    ctx.stroke();
+                    ctx.fillStyle = '#fbbf24';
+                    ctx.font = 'bold 12px Arial';
+                    ctx.fillText(`r = ${pxToCm(radius)} cm`, tempPoints[0].x + radius/2, tempPoints[0].y);
+                }
+                ctx.restore();
+            }
+
+            // Équerre temporaire
+            if (currentTool === 'setSquare' && tempPoints.length === 1) {
+                ctx.save();
+                ctx.strokeStyle = '#fbbf24';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5,5]);
+                
+                const p = tempPoints[0];
+                const size = 50;
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(p.x + size, p.y);
+                ctx.lineTo(p.x, p.y - size);
+                ctx.closePath();
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.moveTo(p.x + 15, p.y);
+                ctx.lineTo(p.x + 15, p.y - 15);
+                ctx.lineTo(p.x, p.y - 15);
+                ctx.stroke();
+                
+                ctx.restore();
+            }
+
+            ctx.restore();
+            updateMeasurements();
+            updateConstructionList();
+            updatePointsList();
+        }
+
+        function findIntersection(p1, p2, p3, p4) {
+            const denom = (p1.x - p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x - p4.x);
+            if (Math.abs(denom) < 0.001) return null;
+            
+            const t = ((p1.x - p3.x) * (p3.y - p4.y) - (p1.y - p3.y) * (p3.x - p4.x)) / denom;
+            
+            if (t >= 0 && t <= 1) {
+                return {
+                    x: p1.x + t * (p2.x - p1.x),
+                    y: p1.y + t * (p2.y - p1.y)
+                };
+            }
+            return null;
+        }
+
+        // ==================== GESTION SOURIS ====================
+        function getCanvasCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            const sx = canvas.width / rect.width;
+            const sy = canvas.height / rect.height;
+            let x = (e.clientX - rect.left) * sx;
+            let y = (e.clientY - rect.top) * sy;
+            x = (x - canvas.width/2) / scale + canvas.width/2;
+            y = (y - canvas.height/2) / scale + canvas.height/2;
+            return snapToGrid ? { x: Math.round(x/PIXELS_PER_CM)*PIXELS_PER_CM, y: Math.round(y/PIXELS_PER_CM)*PIXELS_PER_CM } : { x, y };
+        }
+
+        function findNearestPoint(x, y, threshold=20) {
+            let nearest = null, minDist = threshold;
+            Object.entries(points).forEach(([label, p]) => {
+                const d = Math.hypot(p.x - x, p.y - y);
+                if (d < minDist) { minDist = d; nearest = { label, point: p }; }
+            });
+            return nearest;
+        }
+
+        function findNearestSegment(x, y, threshold=20) {
+            let nearest = null;
+            let minDist = threshold;
+            
+            constructions.forEach((c, index) => {
+                if (c.type === 'segment' && c.p1 && c.p2) {
+                    const d = distanceToSegment(x, y, c.p1, c.p2);
+                    if (d < minDist) {
+                        minDist = d;
+                        nearest = { index, construction: c, type: 'segment' };
+                    }
+                }
+            });
+            return nearest;
+        }
+
+        function distanceToSegment(px, py, p1, p2) {
+            const vx = p2.x - p1.x;
+            const vy = p2.y - p1.y;
+            const wx = px - p1.x;
+            const wy = py - p1.y;
+            
+            const c1 = wx * vx + wy * vy;
+            if (c1 <= 0) return Math.hypot(px - p1.x, py - p1.y);
+            
+            const c2 = vx * vx + vy * vy;
+            if (c2 <= c1) return Math.hypot(px - p2.x, py - p2.y);
+            
+            const b = c1 / c2;
+            const projx = p1.x + b * vx;
+            const projy = p1.y + b * vy;
+            return Math.hypot(px - projx, py - projy);
+        }
+
+        canvas.addEventListener('mousemove', e => {
+            const coords = getCanvasCoords(e);
+            mouseX = coords.x; mouseY = coords.y;
+            const mouseCoordsEl = document.getElementById('mouseCoords');
+            if (mouseCoordsEl) {
+                mouseCoordsEl.textContent = `x: ${pxToCm(mouseX)} cm, y: ${pxToCm(mouseY)} cm`;
+            }
+            
+            if (currentTool === 'select' && dragActive && selectedPoints.length > 0) {
+                const dx = mouseX - dragStart.x;
+                const dy = mouseY - dragStart.y;
+                selectedPoints.forEach(label => {
+                    if (points[label]) {
+                        points[label].x = Math.max(0, Math.min(canvas.width, points[label].x + dx));
+                        points[label].y = Math.max(0, Math.min(canvas.height, points[label].y + dy));
+                    }
+                });
+                dragStart = { x: mouseX, y: mouseY };
+                updatePointsList();
+            } else if (currentTool === 'compass' && tempPoints.length === 1) {
+                compassRadius = distance(tempPoints[0], {x: mouseX, y: mouseY});
+            }
+            draw();
+        });
+
+        canvas.addEventListener('wheel', e => {
+            if (currentTool === 'compass' && tempPoints.length === 1) {
+                e.preventDefault();
+                compassRadius += e.deltaY > 0 ? -5 : 5;
+                compassRadius = Math.max(10, Math.min(500, compassRadius));
+                draw();
+            }
+        });
+
+        canvas.addEventListener('mousedown', e => {
+            const coords = getCanvasCoords(e);
+            const nearest = findNearestPoint(coords.x, coords.y);
+            const nearestSeg = findNearestSegment(coords.x, coords.y);
+
+            if (currentTool === 'select') {
+                if (nearest) {
+                    if (ctrlPressed) {
+                        if (selectedPoints.includes(nearest.label)) {
+                            selectedPoints = selectedPoints.filter(l => l !== nearest.label);
+                        } else {
+                            selectedPoints.push(nearest.label);
+                        }
+                    } else {
+                        selectedPoints = [nearest.label];
+                    }
+                    dragActive = true;
+                    dragStart = coords;
+                } else {
+                    selectedPoints = [];
+                }
+                updateStatus(`Sélection: ${selectedPoints.length} point(s)`);
+                draw();
+                return;
+            }
+
+            if (currentTool === 'eraser') {
+                if (nearest) {
+                    delete points[nearest.label];
+                    updateStatus(`Point ${nearest.label} effacé`);
+                } else if (nearestSeg) {
+                    constructions.splice(nearestSeg.index, 1);
+                    updateStatus('Segment effacé');
+                }
+                draw();
+                return;
+            }
+
+            if (currentTool === 'point') {
+                let label = String.fromCharCode(pointCounter++);
+                while (points[label]) {
+                    label = String.fromCharCode(pointCounter++);
+                    if (pointCounter > 90) pointCounter = 65;
+                }
+                points[label] = { x: coords.x, y: coords.y, color: currentColor, selected: false };
+                updateStatus(`Point ${label} créé`);
+                draw();
+                return;
+            }
+
+            if (currentTool === 'text') {
+                showModal('textModal');
+                tempPoints = [coords];
+                return;
+            }
+
+            if (currentTool === 'latex') {
+                showLatexModal();
+                tempPoints = [coords];
+                return;
+            }
+
+            if (currentTool === 'codeLength') {
+                if (nearestSeg) {
+                    const seg = nearestSeg.construction;
+                    constructions.push({
+                        type: 'codeLength',
+                        p1: seg.p1,
+                        p2: seg.p2,
+                        color: currentColor
+                    });
+                    updateStatus('Longueur codée');
+                    draw();
+                } else {
+                    updateStatus('Cliquez sur un segment');
+                }
+                return;
+            }
+
+            if (currentTool === 'codeAngle' || currentTool === 'codeRightAngle') {
+                if (tempPoints.length < 3 && nearest) {
+                    tempPoints.push(nearest.point);
+                    if (tempPoints.length === 3) {
+                        constructions.push({
+                            type: currentTool === 'codeAngle' ? 'codeAngle' : 'codeRightAngle',
+                            p1: tempPoints[0],
+                            p2: tempPoints[1],
+                            p3: tempPoints[2],
+                            color: currentColor
+                        });
+                        tempPoints = [];
+                        updateStatus(currentTool === 'codeAngle' ? 'Angle codé' : 'Angle droit marqué');
+                    } else {
+                        updateStatus(`Point ${tempPoints.length}/3`);
+                    }
+                    draw();
+                }
+                return;
+            }
+
+            if (currentTool === 'codeParallel' || currentTool === 'codePerpendicular') {
+                if (tempPoints.length < 4 && nearest) {
+                    tempPoints.push(nearest.point);
+                    if (tempPoints.length === 4) {
+                        constructions.push({
+                            type: currentTool,
+                            p1: tempPoints[0],
+                            p2: tempPoints[1],
+                            p3: tempPoints[2],
+                            p4: tempPoints[3],
+                            color: currentColor
+                        });
+                        tempPoints = [];
+                        updateStatus(currentTool === 'codeParallel' ? 'Parallélisme codé' : 'Perpendicularité codée');
+                    } else {
+                        updateStatus(`Point ${tempPoints.length}/4 (2 points par droite)`);
+                    }
+                    draw();
+                }
+                return;
+            }
+
+            if (currentTool === 'label') {
+                if (nearest) {
+                    const newLabel = prompt('Nouvelle étiquette:', nearest.label);
+                    if (newLabel && newLabel.length === 1 && /^[A-Z]$/.test(newLabel)) {
+                        points[newLabel] = { ...points[nearest.label] };
+                        delete points[nearest.label];
+                        if (pointCounter <= newLabel.charCodeAt(0)) pointCounter = newLabel.charCodeAt(0) + 1;
+                    }
+                }
+                draw();
+                return;
+            }
+
+            if (currentTool === 'color' || currentTool === 'fill' || currentTool === 'style') {
+                if (nearest) {
+                    if (currentTool === 'color') {
+                        points[nearest.label].color = currentColor;
+                    }
+                } else if (nearestSeg) {
+                    if (currentTool === 'color') {
+                        constructions[nearestSeg.index].color = currentColor;
+                    } else if (currentTool === 'style') {
+                        constructions[nearestSeg.index].dashed = currentLineStyle !== 'solid';
+                        constructions[nearestSeg.index].dashStyle = currentLineStyle;
+                        constructions[nearestSeg.index].lineWidth = currentLineWidth;
+                    }
+                }
+                draw();
+                return;
+            }
+
+            if (currentTool === 'edit') {
+                if (nearestSeg) {
+                    selectedElement = { index: nearestSeg.index, construction: nearestSeg.construction };
+                    showEditModal();
+                }
+                return;
+            }
+
+            if (currentTool === 'compass') {
+                if (tempPoints.length === 0 && nearest) {
+                    tempPoints = [nearest.point];
+                    compassCenter = nearest.point;
+                } else if (tempPoints.length === 1) {
+                    constructions.push({
+                        type: 'circle',
+                        center: tempPoints[0],
+                        radius: compassRadius,
+                        color: currentColor,
+                        lineWidth: currentLineWidth,
+                        dashed: currentLineStyle !== 'solid',
+                        fill: currentColor + '33'
+                    });
+                    tempPoints = [];
+                    updateStatus('Cercle tracé au compas');
+                }
+                draw();
+                return;
+            }
+
+            if (currentTool === 'protractor') {
+                if (tempPoints.length < 3 && nearest) {
+                    tempPoints.push(nearest.point);
+                    if (tempPoints.length === 3) {
+                        const angle = calculateAngle(tempPoints[0], tempPoints[1], tempPoints[2]);
+                        alert(`Angle mesuré : ${angle.toFixed(1)}°`);
+                        tempPoints = [];
+                    }
+                }
+                return;
+            }
+
+            if (currentTool === 'setSquare') {
+                if (tempPoints.length === 0 && nearest) {
+                    tempPoints = [nearest.point];
+                } else if (tempPoints.length === 1 && nearest) {
+                    const perp = findPerpendicularPoint(nearest.point, tempPoints[0], {x: tempPoints[0].x+100, y: tempPoints[0].y});
+                    constructions.push({
+                        type: 'line',
+                        p1: nearest.point,
+                        p2: perp,
+                        color: currentColor,
+                        lineWidth: currentLineWidth,
+                        dashed: currentLineStyle !== 'solid'
+                    });
+                    tempPoints = [];
+                    updateStatus('Perpendiculaire tracée à l\'équerre');
+                }
+                draw();
+                return;
+            }
+
+            // Outils existants...
+            if (!nearest && currentTool !== 'point' && currentTool !== 'text' && currentTool !== 'latex') {
+                updateStatus('Cliquez sur un point existant');
+                return;
+            }
+
+            switch(currentTool) {
+                case 'line': case 'ray': case 'segment': case 'distance':
+                    if (tempPoints.length === 0 && nearest) {
+                        tempPoints = [nearest.point];
+                    } else if (tempPoints.length === 1 && nearest) {
+                        constructions.push({
+                            type: currentTool,
+                            p1: tempPoints[0],
+                            p2: nearest.point,
+                            color: currentColor,
+                            lineWidth: currentLineWidth,
+                            dashed: currentLineStyle !== 'solid',
+                            dashStyle: currentLineStyle,
+                            showLength: true // Toujours afficher la longueur pour segment et distance
+                        });
+                        tempPoints = [];
+                        updateStatus(`${toolDefinitions[currentTool].name} créé`);
+                    }
+                    break;
+
+                case 'triangle': case 'quadrilateral': case 'polygon':
+                    if (tempPoints.length > 0 && nearest && nearest.point === tempPoints[0] && 
+                        ((currentTool === 'triangle' && tempPoints.length === 3) ||
+                         (currentTool === 'quadrilateral' && tempPoints.length === 4) ||
+                         (currentTool === 'polygon' && tempPoints.length >= 3))) {
+                        constructions.push({
+                            type: 'polygon',
+                            points: [...tempPoints],
+                            color: currentColor,
+                            lineWidth: currentLineWidth,
+                            dashed: currentLineStyle !== 'solid',
+                            fill: currentColor + '33',
+                            icon: currentTool === 'triangle' ? '🔺' : currentTool === 'quadrilateral' ? '🔲' : '⬢'
+                        });
+                        tempPoints = [];
+                        updateStatus(`${toolDefinitions[currentTool].name} créé`);
+                    } else {
+                        if (nearest) {
+                            tempPoints.push(nearest.point);
+                            updateStatus(`Point ${tempPoints.length} sélectionné`);
+                        }
+                    }
+                    break;
+
+                case 'circle':
+                    if (tempPoints.length === 0 && nearest) {
+                        tempPoints = [nearest.point];
+                        showModal('lengthModal');
+                    }
+                    break;
+
+                case 'midpoint':
+                    if (tempPoints.length < 2 && nearest) {
+                        tempPoints.push(nearest.point);
+                        if (tempPoints.length === 2) {
+                            const mid = findMidpoint(tempPoints[0], tempPoints[1]);
+                            const lbl = String.fromCharCode(pointCounter++);
+                            points[lbl] = { x: mid.x, y: mid.y, color: '#fbbf24', selected: false };
+                            constructions.push({ type: 'midpoint', point: mid, label: lbl, color: '#fbbf24' });
+                            tempPoints = [];
+                            updateStatus(`Milieu ${lbl} créé`);
+                        } else updateStatus('Cliquez sur le second point');
+                    }
+                    break;
+
+                case 'angle':
+                    if (tempPoints.length < 3 && nearest) {
+                        tempPoints.push(nearest.point);
+                        if (tempPoints.length === 3) {
+                            constructions.push({ type: 'angle', p1: tempPoints[0], p2: tempPoints[1], p3: tempPoints[2], color: currentColor });
+                            tempPoints = [];
+                            updateStatus('Angle mesuré');
+                        } else updateStatus(`Point ${tempPoints.length}/3`);
+                    }
+                    break;
+
+                case 'area':
+                    if (tempPoints.length > 2 && nearest && nearest.point === tempPoints[0]) {
+                        constructions.push({ type: 'area', points: [...tempPoints], color: currentColor, fill: currentColor + '33' });
+                        tempPoints = [];
+                        updateStatus('Aire calculée');
+                    } else {
+                        if (nearest) {
+                            tempPoints.push(nearest.point);
+                            updateStatus(`Point ${tempPoints.length}`);
+                        }
+                    }
+                    break;
+
+                case 'median':
+                    if (tempPoints.length < 3 && nearest) {
+                        tempPoints.push(nearest.point);
+                        if (tempPoints.length === 3) {
+                            const mid = findMidpoint(tempPoints[1], tempPoints[2]);
+                            constructions.push({ type: 'segment', p1: tempPoints[0], p2: mid, color: currentColor, lineWidth: currentLineWidth, dashed: true, showLength: false });
+                            tempPoints = [];
+                            updateStatus('Médiane tracée');
+                        } else updateStatus(`Point ${tempPoints.length}/3`);
+                    }
+                    break;
+
+                case 'bisector':
+                    if (tempPoints.length < 3 && nearest) {
+                        tempPoints.push(nearest.point);
+                        if (tempPoints.length === 3) {
+                            const bp = findBisectorPoint(tempPoints[0], tempPoints[1], tempPoints[2]);
+                            constructions.push({ type: 'ray', p1: tempPoints[1], p2: bp, color: currentColor, lineWidth: currentLineWidth, dashed: true });
+                            tempPoints = [];
+                            updateStatus('Bissectrice tracée');
+                        } else updateStatus(`Point ${tempPoints.length}/3`);
+                    }
+                    break;
+
+                case 'perpendicular':
+                    if (tempPoints.length < 3 && nearest) {
+                        tempPoints.push(nearest.point);
+                        if (tempPoints.length === 3) {
+                            const pp = findPerpendicularPoint(tempPoints[2], tempPoints[0], tempPoints[1]);
+                            constructions.push({ type: 'line', p1: tempPoints[2], p2: pp, color: currentColor, lineWidth: currentLineWidth, dashed: true });
+                            tempPoints = [];
+                            updateStatus('Perpendiculaire tracée');
+                        } else if (tempPoints.length === 2) updateStatus('Cliquez sur le point de passage');
+                        else updateStatus('Cliquez sur 2 points de la droite');
+                    }
+                    break;
+
+                case 'parallel':
+                    if (tempPoints.length < 3 && nearest) {
+                        tempPoints.push(nearest.point);
+                        if (tempPoints.length === 3) {
+                            const pp = findParallelPoint(tempPoints[2], tempPoints[0], tempPoints[1]);
+                            constructions.push({ type: 'line', p1: tempPoints[2], p2: pp, color: currentColor, lineWidth: currentLineWidth, dashed: true });
+                            tempPoints = [];
+                            updateStatus('Parallèle tracée');
+                        } else if (tempPoints.length === 2) updateStatus('Cliquez sur le point de passage');
+                        else updateStatus('Cliquez sur 2 points de la droite');
+                    }
+                    break;
+
+                case 'symmetry':
+                    if (tempPoints.length < 3 && nearest) {
+                        tempPoints.push(nearest.point);
+                        if (tempPoints.length === 3) {
+                            const sp = findSymmetryPoint(tempPoints[2], tempPoints[0], tempPoints[1]);
+                            const lbl = String.fromCharCode(pointCounter++);
+                            points[lbl] = { x: sp.x, y: sp.y, color: '#96ceb4', selected: false };
+                            constructions.push({ type: 'symmetry', point: sp, label: lbl, axis: { p1: tempPoints[0], p2: tempPoints[1] }, color: '#96ceb4' });
+                            tempPoints = [];
+                            updateStatus(`Symétrique ${lbl} créé`);
+                        } else if (tempPoints.length === 2) updateStatus('Cliquez sur le point à symétriser');
+                        else updateStatus('Cliquez sur 2 points pour l\'axe');
+                    }
+                    break;
+            }
+            draw();
+        });
+
+        canvas.addEventListener('mouseup', () => { dragActive = false; });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Control') ctrlPressed = true;
+            if (e.key === 'Escape') { 
+                tempPoints = []; 
+                draw(); 
+                updateStatus('Annulé');
+                if (isCanvasFullscreen) {
+                    toggleCanvasFullscreen();
+                }
+            }
+            if (e.key === 'Delete' && selectedPoints.length > 0) {
+                selectedPoints.forEach(l => delete points[l]);
+                selectedPoints = [];
+                updatePointsList();
+                draw();
+                updateStatus('Points supprimés');
+            }
+        });
+        document.addEventListener('keyup', e => { if (e.key === 'Control') ctrlPressed = false; });
+
+        // ==================== FONCTIONS OUTILS ====================
+        function setTool(tool) {
+            currentTool = tool;
+            tempPoints = [];
+            document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+            const btn = document.getElementById(`tool-${tool}`);
+            if (btn) btn.classList.add('active');
+            updateToolInfo(tool);
+            updateStatus(`Outil: ${toolDefinitions[tool].name}`);
+            draw();
+        }
+
+        function toggleGrid() {
+            gridEnabled = !gridEnabled;
+            snapToGrid = gridEnabled;
+            const snapEl = document.getElementById('snapStatus');
+            if (snapEl) snapEl.innerHTML = gridEnabled ? '🔲 Grille: ON' : '🔲 Grille: OFF';
+            draw();
+        }
+
+        function clearAll() {
+            if (confirm('Tout effacer ?')) {
+                points = {};
+                constructions = [];
+                tempPoints = [];
+                selectedPoints = [];
+                pointCounter = 65;
+                updatePointsList();
+                updateStatus('Tout effacé');
+                draw();
+            }
+        }
+
+        function zoom(f) {
+            scale = Math.max(0.5, Math.min(2, scale * f));
+            const scaleEl = document.getElementById('canvasScale');
+            if (scaleEl) scaleEl.textContent = `Échelle: ${Math.round(scale*100)}%`;
+            draw();
+        }
+
+        function resetView() { scale = 1; draw(); }
+
+        function toggleFullscreen() {
+            const mc = document.querySelector('.main-container');
+            const btn = document.getElementById('fullscreenBtn');
+            if (!isFullscreen) {
+                mc.style.position = 'fixed'; mc.style.top = '0'; mc.style.left = '0';
+                mc.style.width = '100vw'; mc.style.height = '100vh'; mc.style.zIndex = '9999';
+                mc.style.borderRadius = '0'; mc.style.overflow = 'auto';
+                if (btn) {
+                    btn.textContent = '✕ Quitter'; 
+                    btn.style.background = '#f56565'; 
+                    btn.style.color = 'white';
+                }
+                isFullscreen = true;
+            } else {
+                mc.style.position = ''; mc.style.top = ''; mc.style.left = '';
+                mc.style.width = ''; mc.style.height = ''; mc.style.zIndex = '';
+                mc.style.borderRadius = ''; mc.style.overflow = '';
+                if (btn) {
+                    btn.textContent = '⛶ Plein écran'; 
+                    btn.style.background = ''; 
+                    btn.style.color = '';
+                }
+                isFullscreen = false;
+            }
+            setTimeout(() => draw(), 100);
+        }
+
+        function exportAsPNG() {
+            const exp = document.createElement('canvas');
+            exp.width = canvas.width; exp.height = canvas.height;
+            const ectx = exp.getContext('2d');
+            ectx.fillStyle = backgroundColor;
+            ectx.fillRect(0, 0, exp.width, exp.height);
+            
+            // Dessiner la grille
+            if (gridEnabled) {
+                ectx.strokeStyle = '#e9ecef'; ectx.lineWidth = 0.5;
+                for (let x=0; x<=exp.width; x+=PIXELS_PER_CM) {
+                    ectx.beginPath(); ectx.moveTo(x,0); ectx.lineTo(x,exp.height); ectx.stroke();
+                }
+                for (let y=0; y<=exp.height; y+=PIXELS_PER_CM) {
+                    ectx.beginPath(); ectx.moveTo(0,y); ectx.lineTo(exp.width,y); ectx.stroke();
+                }
+            }
+            
+            // Dessiner les constructions
+            constructions.forEach(c => {
+                ectx.save();
+                ectx.strokeStyle = c.color || '#667eea';
+                ectx.lineWidth = c.lineWidth || 2;
+                if (c.type === 'polygon' && c.points) {
+                    ectx.beginPath(); ectx.moveTo(c.points[0].x, c.points[0].y);
+                    for (let i=1; i<c.points.length; i++) ectx.lineTo(c.points[i].x, c.points[i].y);
+                    ectx.closePath(); ectx.stroke();
+                    if (c.fill) {
+                        ectx.fillStyle = c.fill;
+                        ectx.fill();
+                    }
+                } else if (c.type === 'circle' && c.center && c.radius) {
+                    ectx.beginPath(); ectx.arc(c.center.x, c.center.y, c.radius, 0, 2*Math.PI); ectx.stroke();
+                } else if (c.type === 'text' || c.type === 'latex') {
+                    ectx.font = `${c.fontSize || 16}px ${c.type === 'latex' ? 'Times New Roman' : (c.font || 'Arial')}`;
+                    ectx.fillStyle = c.color || '#000';
+                    let text = c.text || '';
+                    if (c.type === 'latex') text = text.replace(/^\$|\$$/g, '');
+                    ectx.fillText(text, c.x, c.y);
+                } else if (c.p1 && c.p2) {
+                    ectx.beginPath(); ectx.moveTo(c.p1.x, c.p1.y); ectx.lineTo(c.p2.x, c.p2.y); ectx.stroke();
+                }
+                ectx.restore();
+            });
+            
+            // Dessiner les points
+            Object.entries(points).forEach(([l,p]) => {
+                ectx.save();
+                ectx.fillStyle = p.color || '#ff6b6b';
+                ectx.beginPath(); ectx.arc(p.x, p.y, 6, 0, 2*Math.PI); ectx.fill();
+                ectx.fillStyle = '#2d3748';
+                ectx.font = 'bold 14px "Segoe UI"';
+                ectx.fillText(l, p.x+12, p.y-12);
+                ectx.restore();
+            });
+            
+            const link = document.createElement('a');
+            link.download = 'geolab.png';
+            link.href = exp.toDataURL('image/png');
+            link.click();
+        }
+
+        // ==================== MODALES ====================
+        function showModal(id) { 
+            const modal = document.getElementById(id);
+            if (modal) modal.style.display = 'flex'; 
+        }
+        
+        function closeModal(id) { 
+            const modal = document.getElementById(id);
+            if (modal) modal.style.display = 'none';
+            if (currentTool === 'circle' && tempPoints.length > 0) { tempPoints = []; draw(); }
+            if (currentTool === 'text' || currentTool === 'latex') { tempPoints = []; }
+        }
+
+        function showPointModal() { showModal('pointModal'); }
+        function showQuickStartModal() { showModal('quickStartModal'); }
+        
+        function showLatexModal() { 
+            showModal('latexModal');
+            setTimeout(() => {
+                updateLatexPreview();
+            }, 100);
+        }
+
+        function updateLatexPreview() {
+            if (!latexInput || !latexPreview) return;
+            const input = latexInput.value;
+            let formula = input.replace(/^\$|\$$/g, '');
+            latexPreview.innerHTML = `\\(${formula}\\)`;
+            if (window.MathJax) {
+                MathJax.typesetPromise([latexPreview]).catch(err => console.log('MathJax error:', err));
+            }
+        }
+
+        if (latexInput) {
+            latexInput.addEventListener('input', updateLatexPreview);
+        }
+
+        function showAngleSimulator() { 
+            showModal('angleSimulatorModal');
+            updateAngleSimulator();
+        }
+
+        function showPythagore() {
+            showModal('pythagoreModal');
+            updatePythagore();
+        }
+
+        function updateAngleSimulator() {
+            const slider = document.getElementById('angleSlider');
+            if (!slider) return;
+            const value = parseInt(slider.value);
+            const angleValEl = document.getElementById('angleValue');
+            const angleTypeEl = document.getElementById('angleType');
+            const angleCompEl = document.getElementById('angleComplement');
+            const angleSuppEl = document.getElementById('angleSupplement');
+            
+            if (angleValEl) angleValEl.textContent = value + '°';
+            
+            let type = '';
+            if (value < 90) type = 'Angle aigu';
+            else if (value === 90) type = 'Angle droit';
+            else type = 'Angle obtus';
+            if (angleTypeEl) angleTypeEl.textContent = type;
+            
+            if (angleCompEl) angleCompEl.textContent = (90 - value) + '°';
+            if (angleSuppEl) angleSuppEl.textContent = (180 - value) + '°';
+        }
+
+        const angleSlider = document.getElementById('angleSlider');
+        if (angleSlider) {
+            angleSlider.addEventListener('input', updateAngleSimulator);
+        }
+
+        function updatePythagore() {
+            const aEl = document.getElementById('pythagoreA');
+            const bEl = document.getElementById('pythagoreB');
+            const cEl = document.getElementById('pythagoreC');
+            const sumEl = document.getElementById('pythagoreSum');
+            const cSquareEl = document.getElementById('pythagoreCSquare');
+            const checkEl = document.getElementById('pythagoreCheck');
+            
+            if (!aEl || !bEl || !cEl || !sumEl || !cSquareEl || !checkEl) return;
+            
+            const a = parseFloat(aEl.value) || 0;
+            const b = parseFloat(bEl.value) || 0;
+            const c = parseFloat(cEl.value) || 0;
+            
+            const sum = a*a + b*b;
+            const cSquare = c*c;
+            
+            sumEl.textContent = sum.toFixed(2);
+            cSquareEl.textContent = cSquare.toFixed(2);
+            
+            const tolerance = 0.01;
+            if (Math.abs(sum - cSquare) < tolerance) {
+                checkEl.textContent = '✅ Égalité vérifiée';
+                checkEl.style.color = '#48bb78';
+            } else {
+                checkEl.textContent = '❌ Égalité non vérifiée';
+                checkEl.style.color = '#f56565';
+            }
+        }
+
+        const pythagoreA = document.getElementById('pythagoreA');
+        const pythagoreB = document.getElementById('pythagoreB');
+        const pythagoreC = document.getElementById('pythagoreC');
+        
+        if (pythagoreA) pythagoreA.addEventListener('input', updatePythagore);
+        if (pythagoreB) pythagoreB.addEventListener('input', updatePythagore);
+        if (pythagoreC) pythagoreC.addEventListener('input', updatePythagore);
+
+        function drawSimulatedAngle() {
+            const slider = document.getElementById('angleSlider');
+            if (!slider) return;
+            
+            const angle = parseInt(slider.value) * Math.PI / 180;
+            const center = { x: canvas.width/2, y: canvas.height/2 };
+            const radius = 100;
+            
+            const p1 = { x: center.x + radius, y: center.y };
+            const p2 = center;
+            const p3 = { x: center.x + radius * Math.cos(angle), y: center.y - radius * Math.sin(angle) };
+            
+            constructions.push({
+                type: 'angle',
+                p1: p1,
+                p2: p2,
+                p3: p3,
+                color: currentColor
+            });
+            
+            closeModal('angleSimulatorModal');
+            draw();
+        }
+
+        function drawPythagoreTriangle() {
+            const aEl = document.getElementById('pythagoreA');
+            const bEl = document.getElementById('pythagoreB');
+            if (!aEl || !bEl) return;
+            
+            const a = parseFloat(aEl.value) || 3;
+            const b = parseFloat(bEl.value) || 4;
+            
+            const startX = 300;
+            const startY = 300;
+            
+            const pA = { x: startX, y: startY };
+            const pB = { x: startX + cmToPx(b), y: startY };
+            const pC = { x: startX, y: startY - cmToPx(a) };
+            
+            points['A'] = { x: pA.x, y: pA.y, color: '#ff6b6b', selected: false };
+            points['B'] = { x: pB.x, y: pB.y, color: '#4ecdc4', selected: false };
+            points['C'] = { x: pC.x, y: pC.y, color: '#45b7d1', selected: false };
+            
+            constructions.push({
+                type: 'polygon',
+                points: [pA, pB, pC],
+                color: currentColor,
+                lineWidth: currentLineWidth,
+                fill: currentColor + '33'
+            });
+            
+            // Marquer l'angle droit
+            constructions.push({
+                type: 'codeRightAngle',
+                p1: pB,
+                p2: pA,
+                p3: pC,
+                color: '#000'
+            });
+            
+            closeModal('pythagoreModal');
+            draw();
+        }
+
+        function addText() {
+            const textEl = document.getElementById('textContent');
+            const fontEl = document.getElementById('textFont');
+            const sizeEl = document.getElementById('textSize');
+            
+            if (!textEl || !fontEl || !sizeEl) return;
+            
+            const text = textEl.value;
+            const font = fontEl.value;
+            const size = parseInt(sizeEl.value);
+            
+            if (text && tempPoints.length === 1) {
+                constructions.push({
+                    type: 'text',
+                    text: text,
+                    x: tempPoints[0].x,
+                    y: tempPoints[0].y,
+                    font: font,
+                    fontSize: size,
+                    color: currentColor
+                });
+                tempPoints = [];
+                closeModal('textModal');
+                draw();
+            }
+        }
+
+        function addLatex() {
+            const latexEl = document.getElementById('latexInput');
+            const sizeEl = document.getElementById('latexSize');
+            
+            if (!latexEl || !sizeEl) return;
+            
+            const latex = latexEl.value;
+            const size = parseInt(sizeEl.value);
+            
+            if (latex && tempPoints.length === 1) {
+                constructions.push({
+                    type: 'latex',
+                    text: latex,
+                    x: tempPoints[0].x,
+                    y: tempPoints[0].y,
+                    fontSize: size,
+                    color: currentColor
+                });
+                tempPoints = [];
+                closeModal('latexModal');
+                draw();
+            }
+        }
+
+        function showEditModal() {
+            if (!selectedElement) return;
+            
+            const content = document.getElementById('editContent');
+            const constr = selectedElement.construction;
+            
+            if (!content) return;
+            
+            if (constr.type === 'text' || constr.type === 'latex') {
+                content.innerHTML = `
+                    <label>Texte:</label>
+                    <textarea id="editText">${constr.text || ''}</textarea>
+                    <label>Taille:</label>
+                    <input type="number" id="editSize" value="${constr.fontSize || 16}" min="8" max="72">
+                `;
+            } else if (constr.type === 'polygon') {
+                content.innerHTML = `
+                    <label>Couleur de remplissage:</label>
+                    <input type="color" id="editFillColor" value="${constr.fill ? constr.fill.slice(0,7) : '#ff6b6b'}">
+                    <label>Opacité:</label>
+                    <input type="range" id="editOpacity" min="0" max="100" value="20">
+                `;
+            } else {
+                content.innerHTML = '<p>Sélectionnez un élément modifiable (texte ou polygone)</p>';
+            }
+            
+            showModal('editModal');
+        }
+
+        function applyEdit() {
+            if (!selectedElement) return;
+            
+            const constr = selectedElement.construction;
+            const index = selectedElement.index;
+            
+            if (constr.type === 'text' || constr.type === 'latex') {
+                const newText = document.getElementById('editText')?.value;
+                const newSize = parseInt(document.getElementById('editSize')?.value);
+                
+                if (newText) constructions[index].text = newText;
+                if (newSize && !isNaN(newSize)) constructions[index].fontSize = newSize;
+            } else if (constr.type === 'polygon') {
+                const newColor = document.getElementById('editFillColor')?.value;
+                const opacity = parseInt(document.getElementById('editOpacity')?.value) / 100;
+                if (newColor) {
+                    const r = parseInt(newColor.slice(1,3), 16);
+                    const g = parseInt(newColor.slice(3,5), 16);
+                    const b = parseInt(newColor.slice(5,7), 16);
+                    constructions[index].fill = `rgba(${r},${g},${b},${opacity})`;
+                }
+            }
+            
+            closeModal('editModal');
+            draw();
+        }
+
+        function confirmLength() {
+            const lengthEl = document.getElementById('modalLength');
+            if (!lengthEl) return;
+            
+            const r = parseFloat(lengthEl.value);
+            if (r && r>0 && r<=15 && currentTool==='circle' && tempPoints.length===1) {
+                constructions.push({
+                    type:'circle',
+                    center:tempPoints[0],
+                    radius:cmToPx(r),
+                    color:currentColor,
+                    lineWidth: currentLineWidth,
+                    dashed: currentLineStyle !== 'solid',
+                    fill: currentColor + '33'
+                });
+                tempPoints = []; draw(); closeModal('lengthModal'); updateStatus(`Cercle rayon ${r} cm`);
+            } else alert('Rayon 0.5-15 cm');
+        }
+
+        function addNewPoint() {
+            const nameEl = document.getElementById('newPointName');
+            const xEl = document.getElementById('newPointX');
+            const yEl = document.getElementById('newPointY');
+            
+            if (!nameEl || !xEl || !yEl) return;
+            
+            const name = nameEl.value.toUpperCase();
+            const x = parseFloat(xEl.value);
+            const y = parseFloat(yEl.value);
+            
+            if (!name || !/^[A-Z]$/.test(name)) { alert('Lettre majuscule'); return; }
+            if (points[name]) { alert('Point existe déjà'); return; }
+            if (isNaN(x)||isNaN(y)||x<0||x>30||y<0||y>20) { alert('Coords 0-30, 0-20'); return; }
+            
+            points[name] = { x: cmToPx(x), y: cmToPx(y), color: currentColor, selected: false };
+            if (pointCounter <= name.charCodeAt(0)) pointCounter = name.charCodeAt(0) + 1;
+            
+            closeModal('pointModal');
+            updatePointsList();
+            draw();
+        }
+
+        // ==================== EXEMPLES ====================
+        function startWithTriangle() {
+            points = { 
+                A:{x:cmToPx(5),y:cmToPx(5),color:'#ff6b6b',selected:false},
+                B:{x:cmToPx(15),y:cmToPx(5),color:'#4ecdc4',selected:false},
+                C:{x:cmToPx(10),y:cmToPx(12),color:'#45b7d1',selected:false} 
+            };
+            pointCounter = 68;
+            constructions = [{ 
+                type:'polygon', 
+                points:[points.A,points.B,points.C], 
+                color:'#667eea', 
+                lineWidth:2,
+                fill:'rgba(102,126,234,0.1)' 
+            }];
+            closeModal('quickStartModal'); updatePointsList(); draw();
+        }
+
+        function startWithRectangle() {
+            points = { 
+                A:{x:cmToPx(5),y:cmToPx(5),color:'#ff6b6b',selected:false},
+                B:{x:cmToPx(15),y:cmToPx(5),color:'#4ecdc4',selected:false},
+                C:{x:cmToPx(15),y:cmToPx(12),color:'#45b7d1',selected:false},
+                D:{x:cmToPx(5),y:cmToPx(12),color:'#96ceb4',selected:false} 
+            };
+            pointCounter = 69;
+            constructions = [{ 
+                type:'polygon', 
+                points:[points.A,points.B,points.C,points.D], 
+                color:'#45b7d1',
+                lineWidth:2, 
+                fill:'rgba(69,183,209,0.1)' 
+            }];
+            closeModal('quickStartModal'); updatePointsList(); draw();
+        }
+
+        function startWithCircle() {
+            points = { O:{x:cmToPx(10),y:cmToPx(8),color:'#ff6b6b',selected:false} };
+            pointCounter = 66;
+            constructions = [{ 
+                type:'circle', 
+                center:points.O, 
+                radius:cmToPx(5), 
+                color:'#54a0ff',
+                lineWidth:2,
+                fill:'rgba(84,160,255,0.1)' 
+            }];
+            closeModal('quickStartModal'); updatePointsList(); draw();
+        }
+
+        function startWithPoints() {
+            points = { 
+                A:{x:cmToPx(3),y:cmToPx(3),color:'#ff6b6b',selected:false},
+                B:{x:cmToPx(8),y:cmToPx(5),color:'#4ecdc4',selected:false},
+                C:{x:cmToPx(12),y:cmToPx(8),color:'#45b7d1',selected:false},
+                D:{x:cmToPx(5),y:cmToPx(12),color:'#96ceb4',selected:false},
+                E:{x:cmToPx(15),y:cmToPx(10),color:'#ffeaa7',selected:false} 
+            };
+            pointCounter = 70;
+            constructions = [];
+            closeModal('quickStartModal'); updatePointsList(); draw();
+        }
+
+        function startWithPythagore() {
+            drawPythagoreTriangle();
+            closeModal('quickStartModal');
+        }
+
+        function startEmpty() { 
+            closeModal('quickStartModal'); 
+            points = {}; 
+            constructions = []; 
+            tempPoints = []; 
+            selectedPoints = []; 
+            pointCounter = 65; 
+            updatePointsList(); 
+            draw(); 
+        }
+
+        window.onclick = function(e) { 
+            if (e.target.classList.contains('modal')) {
+                const modalId = e.target.id;
+                closeModal(modalId);
+            }
+        };
+
+        // Redimensionnement lors du changement de taille de fenêtre
+        window.addEventListener('resize', () => {
+            if (isCanvasFullscreen) {
+                setTimeout(() => draw(), 100);
+            }
+        });
+
+        // INIT
+        setTool('select');
+        draw();
+    </script>
+</body>
+</html>

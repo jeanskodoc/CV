@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Simulation Mathématique - Visualiseur Universel</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #e67e22;
+            --math-blue: #3498db;
+            --math-green: #27ae60;
+            --math-purple: #9b59b6;
+            --bg-color: #ecf0f1;
+            --card-bg: #ffffff;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            
+            /* Tailles responsives */
+            --header-size: clamp(1.5rem, 5vw, 2.5rem);
+            --text-size: clamp(0.875rem, 2vw, 1rem);
+            --spacing: clamp(10px, 3vw, 20px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: clamp(10px, 3vw, 20px);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.fullscreen-mode {
+            padding: 0;
+            overflow: hidden;
+        }
+
+        /* Animation de fond mathématique */
+        .math-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .math-symbol {
+            position: absolute;
+            font-size: clamp(16px, 4vw, 24px);
+            color: white;
+            animation: float 20s infinite linear;
+            user-select: none;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+            }
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            transition: var(--transition);
+        }
+
+        body.fullscreen-mode .container {
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* En-tête responsive */
+        .math-header {
+            text-align: center;
+            margin-bottom: clamp(15px, 4vw, 30px);
+            color: white;
+            transition: var(--transition);
+            padding: 0 var(--spacing);
+        }
+
+        body.fullscreen-mode .math-header {
+            display: none;
+        }
+
+        .math-header h1 {
+            font-size: var(--header-size);
+            font-weight: 700;
+            margin-bottom: clamp(5px, 2vw, 10px);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(5px, 2vw, 15px);
+            flex-wrap: wrap;
+        }
+
+        .math-symbols {
+            display: flex;
+            gap: clamp(5px, 2vw, 10px);
+            justify-content: center;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            flex-wrap: wrap;
+        }
+
+        .math-symbols span {
+            animation: bounce 2s infinite;
+            display: inline-block;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Carte principale responsive */
+        .math-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: clamp(15px, 4vw, 30px);
+            margin-bottom: clamp(15px, 4vw, 30px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        body.fullscreen-mode .math-card {
+            border-radius: 0;
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Panneau de contrôle responsive */
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: clamp(10px, 3vw, 20px);
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: clamp(15px, 4vw, 30px);
+            padding: clamp(15px, 3vw, 20px);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        body.fullscreen-mode .control-panel {
+            margin-bottom: 0;
+            border-radius: 0;
+            padding: clamp(10px, 2vw, 15px) clamp(15px, 3vw, 20px);
+            background: rgba(52, 152, 219, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        body.fullscreen-mode .control-panel .file-input-wrapper,
+        body.fullscreen-mode .control-panel .file-name,
+        body.fullscreen-mode .control-panel .action-buttons button:not(#fullscreenBtn) {
+            display: none;
+        }
+
+        .file-input-wrapper {
+            flex: 1;
+            min-width: min(100%, 300px);
+        }
+
+        .file-input-label {
+            display: inline-flex;
+            align-items: center;
+            gap: clamp(5px, 2vw, 10px);
+            padding: clamp(10px, 3vw, 15px) clamp(15px, 4vw, 25px);
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            border: 2px solid transparent;
+            font-size: var(--text-size);
+            width: fit-content;
+            max-width: 100%;
+        }
+
+        .file-input-label:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .file-input-label span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        @media (max-width: 480px) {
+            .file-input-label span {
+                max-width: 120px;
+            }
+        }
+
+        #fileInput {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        .file-name {
+            margin-left: clamp(5px, 2vw, 15px);
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: var(--text-size);
+            display: inline-block;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .file-name {
+                display: block;
+                margin-left: 0;
+                margin-top: 5px;
+                max-width: 100%;
+            }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: clamp(5px, 2vw, 10px);
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        @media (max-width: 480px) {
+            .action-buttons {
+                justify-content: center;
+                width: 100%;
+            }
+        }
+
+        .math-btn {
+            padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 24px);
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(4px, 1.5vw, 8px);
+            font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+            white-space: nowrap;
+            min-width: 40px;
+        }
+
+        @media (max-width: 380px) {
+            .math-btn span {
+                display: none;
+            }
+            
+            .math-btn i {
+                font-size: 1.2rem;
+            }
+        }
+
+        .math-btn.primary {
+            background: var(--math-blue);
+            color: white;
+        }
+
+        .math-btn.primary:hover:not(:disabled) {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .math-btn.secondary {
+            background: var(--math-green);
+            color: white;
+        }
+
+        .math-btn.secondary:hover:not(:disabled) {
+            background: #219a52;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .math-btn.warning {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .math-btn.warning:hover:not(:disabled) {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .math-btn.fullscreen {
+            background: var(--math-purple);
+            color: white;
+        }
+
+        .math-btn.fullscreen:hover:not(:disabled) {
+            background: #8e44ad;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
+        }
+
+        .math-btn.exit-fullscreen {
+            background: #e67e22;
+            color: white;
+        }
+
+        .math-btn.exit-fullscreen:hover {
+            background: #d35400;
+        }
+
+        .math-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Onglets responsives */
+        .tab-container {
+            margin-bottom: clamp(10px, 3vw, 20px);
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        body.fullscreen-mode .tab-container {
+            margin-bottom: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0; /* Important pour Firefox */
+        }
+
+        .tabs {
+            display: flex;
+            gap: clamp(5px, 2vw, 10px);
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: clamp(5px, 2vw, 10px);
+            margin-bottom: clamp(10px, 3vw, 20px);
+            flex-wrap: wrap;
+        }
+
+        body.fullscreen-mode .tabs {
+            display: none;
+        }
+
+        .tab {
+            padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 20px);
+            background: none;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: clamp(4px, 1.5vw, 8px);
+            font-size: var(--text-size);
+            flex: 0 1 auto;
+        }
+
+        @media (max-width: 480px) {
+            .tab {
+                flex: 1;
+                justify-content: center;
+            }
+            
+            .tab span {
+                display: none;
+            }
+            
+            .tab i {
+                font-size: 1.2rem;
+            }
+        }
+
+        .tab:hover {
+            color: var(--math-blue);
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .tab.active {
+            color: var(--math-blue);
+            border-bottom: 3px solid var(--math-blue);
+        }
+
+        .tab-content {
+            display: none;
+            min-height: min(400px, 50vh);
+            width: 100%;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        body.fullscreen-mode .tab-content.active {
+            display: flex;
+            flex: 1;
+            height: 100%;
+            min-height: 0;
+        }
+
+        /* Zones de visualisation responsives */
+        .preview-frame {
+            width: 100%;
+            height: min(600px, 60vh);
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            background: white;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        body.fullscreen-mode .preview-frame {
+            height: 100%;
+            border: none;
+            border-radius: 0;
+        }
+
+        #livePreview {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: var(--border-radius);
+        }
+
+        body.fullscreen-mode #livePreview {
+            border-radius: 0;
+        }
+
+        /* Zone de code responsive */
+        .code-container {
+            background: #1e1e1e;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            min-height: min(500px, 50vh);
+        }
+
+        .code-header {
+            background: #2d2d2d;
+            padding: clamp(10px, 2vw, 15px) clamp(15px, 3vw, 20px);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .code-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .code-actions {
+            display: flex;
+            gap: clamp(5px, 2vw, 10px);
+            flex-wrap: wrap;
+        }
+
+        .code-actions button {
+            padding: clamp(4px, 1.5vw, 5px) clamp(8px, 2vw, 15px);
+            background: #3d3d3d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: clamp(0.8rem, 2vw, 0.9em);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        @media (max-width: 480px) {
+            .code-actions button span {
+                display: none;
+            }
+        }
+
+        .code-actions button:hover:not(:disabled) {
+            background: #4d4d4d;
+        }
+
+        #fileContent {
+            width: 100%;
+            flex: 1;
+            padding: clamp(10px, 3vw, 20px);
+            background: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: clamp(12px, 2vw, 14px);
+            line-height: 1.6;
+            border: none;
+            resize: vertical;
+            white-space: pre;
+            overflow: auto;
+            min-height: 200px;
+        }
+
+        body.fullscreen-mode #fileContent {
+            resize: none;
+            height: 100%;
+        }
+
+        /* Vue partagée responsive */
+        #splitTab > div {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+            gap: clamp(10px, 3vw, 20px) !important;
+            height: min(600px, 70vh) !important;
+        }
+
+        @media (max-width: 768px) {
+            #splitTab > div {
+                grid-template-columns: 1fr !important;
+                height: auto !important;
+                gap: 20px;
+            }
+            
+            #splitTab .preview-frame {
+                height: 400px;
+            }
+            
+            #splitTab .code-container {
+                height: 400px;
+            }
+        }
+
+        body.fullscreen-mode #splitTab > div {
+            height: 100% !important;
+        }
+
+        /* Barre d'information responsive */
+        .file-info-bar {
+            display: flex;
+            gap: clamp(10px, 3vw, 20px);
+            padding: clamp(10px, 2vw, 15px);
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-top: clamp(10px, 2vw, 15px);
+            flex-wrap: wrap;
+            transition: var(--transition);
+            font-size: var(--text-size);
+        }
+
+        body.fullscreen-mode .file-info-bar {
+            display: none;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: clamp(4px, 1.5vw, 8px);
+            color: var(--text-dark);
+            flex: 1 1 auto;
+            min-width: 120px;
+        }
+
+        @media (max-width: 480px) {
+            .info-item {
+                min-width: 100%;
+            }
+        }
+
+        /* Contrôles plein écran flottants responsifs */
+        .fullscreen-controls {
+            display: none;
+            position: fixed;
+            bottom: clamp(10px, 4vw, 20px);
+            right: clamp(10px, 4vw, 20px);
+            z-index: 1000;
+            gap: clamp(5px, 2vw, 10px);
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        body.fullscreen-mode .fullscreen-controls {
+            display: flex;
+        }
+
+        .fullscreen-controls .math-btn {
+            padding: clamp(10px, 3vw, 15px) clamp(15px, 4vw, 25px);
+            font-size: clamp(0.9rem, 3vw, 1.1em);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            background: rgba(52, 152, 219, 0.9);
+        }
+
+        @media (max-width: 480px) {
+            .fullscreen-controls {
+                bottom: 5px;
+                right: 5px;
+                left: 5px;
+                justify-content: center;
+            }
+            
+            .fullscreen-controls .math-btn {
+                flex: 1;
+                padding: 10px;
+            }
+        }
+
+        /* Messages responsifs */
+        .info-message {
+            text-align: center;
+            padding: clamp(40px, 10vw, 100px) clamp(10px, 3vw, 20px);
+            color: var(--text-light);
+            font-style: italic;
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            border: 2px dashed #e0e0e0;
+            font-size: var(--text-size);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            background: #fdf0ed;
+            padding: clamp(10px, 2vw, 15px);
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+            margin: 10px 0;
+            font-size: var(--text-size);
+        }
+
+        .loading {
+            text-align: center;
+            padding: clamp(40px, 10vw, 100px) clamp(10px, 3vw, 20px);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: clamp(30px, 8vw, 40px);
+            height: clamp(30px, 8vw, 40px);
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--math-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: clamp(10px, 2vw, 15px);
+        }
+
+        /* Pied de page responsive */
+        .math-footer {
+            text-align: center;
+            color: white;
+            margin-top: clamp(15px, 4vw, 30px);
+            font-size: clamp(0.8rem, 2.5vw, 0.9em);
+            opacity: 0.8;
+            transition: var(--transition);
+            padding: 0 var(--spacing);
+        }
+
+        body.fullscreen-mode .math-footer {
+            display: none;
+        }
+
+        /* Ajustements pour très petits écrans */
+        @media (max-width: 320px) {
+            :root {
+                --spacing: 5px;
+            }
+            
+            .math-btn {
+                padding: 8px;
+            }
+            
+            .tab {
+                padding: 8px;
+            }
+        }
+
+        /* Ajustements pour grands écrans */
+        @media (min-width: 1200px) {
+            .preview-frame {
+                height: 700px;
+            }
+            
+            #splitTab > div {
+                height: 700px;
+            }
+        }
+
+        /* Support des écrans tactiles */
+        @media (hover: none) and (pointer: coarse) {
+            .math-btn:hover {
+                transform: none;
+            }
+            
+            .file-input-label:hover {
+                transform: none;
+            }
+            
+            .tab:hover {
+                transform: none;
+            }
+        }
+
+        /* Mode paysage sur mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .math-header {
+                margin-bottom: 10px;
+            }
+            
+            .preview-frame {
+                height: 300px;
+            }
+            
+            #splitTab > div {
+                height: 300px;
+            }
+            
+            .file-info-bar {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fond animé -->
+    <div class="math-background" id="mathBackground"></div>
+
+    <div class="container">
+        <header class="math-header">
+            <h1>
+                <span>📊</span>
+                <span>Visualiseur Universel</span>
+                <span>📈</span>
+            </h1>
+            <div class="math-symbols">
+                <span>∫</span>
+                <span>∑</span>
+                <span>∏</span>
+                <span>√</span>
+                <span>π</span>
+                <span>θ</span>
+            </div>
+        </header>
+
+        <div class="math-card">
+            <!-- Panneau de contrôle -->
+            <div class="control-panel">
+                <div class="file-input-wrapper">
+                    <label for="fileInput" class="file-input-label">
+                        <i>📁</i>
+                        <span>Choisir un fichier</span>
+                    </label>
+                    <input type="file" id="fileInput" accept=".html,.htm" />
+                    <span class="file-name" id="fileNameDisplay">Aucun fichier</span>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="math-btn primary" id="loadInPreviewBtn" disabled title="Afficher">
+                        <i>👁️</i><span>Afficher</span>
+                    </button>
+                    <button class="math-btn secondary" id="refreshBtn" disabled title="Rafraîchir">
+                        <i>🔄</i><span>Rafraîchir</span>
+                    </button>
+                    <button class="math-btn fullscreen" id="fullscreenBtn" disabled title="Plein écran">
+                        <i>⛶</i><span>Plein écran</span>
+                    </button>
+                    <button class="math-btn warning" id="clearBtn" disabled title="Effacer">
+                        <i>🗑️</i><span>Effacer</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Barre d'information fichier -->
+            <div class="file-info-bar" id="fileInfoBar" style="display: none;">
+                <div class="info-item">
+                    <i>📄</i>
+                    <span id="fileInfoName">-</span>
+                </div>
+                <div class="info-item">
+                    <i>📏</i>
+                    <span id="fileInfoSize">-</span>
+                </div>
+                <div class="info-item">
+                    <i>🕒</i>
+                    <span id="fileInfoDate">-</span>
+                </div>
+                <div class="info-item">
+                    <i>📊</i>
+                    <span id="fileInfoLines">- lignes</span>
+                </div>
+            </div>
+
+            <!-- Onglets -->
+            <div class="tab-container">
+                <div class="tabs">
+                    <button class="tab active" data-tab="preview" title="Aperçu visuel">
+                        <i>👁️</i><span>Aperçu</span>
+                    </button>
+                    <button class="tab" data-tab="code" title="Code source">
+                        <i>📝</i><span>Code</span>
+                    </button>
+                    <button class="tab" data-tab="split" title="Vue partagée">
+                        <i>🔄</i><span>Partagé</span>
+                    </button>
+                </div>
+
+                <!-- Onglet Aperçu -->
+                <div class="tab-content active" id="previewTab">
+                    <div class="preview-frame">
+                        <iframe id="livePreview" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals" title="Aperçu HTML"></iframe>
+                    </div>
+                </div>
+
+                <!-- Onglet Code -->
+                <div class="tab-content" id="codeTab">
+                    <div class="code-container">
+                        <div class="code-header">
+                            <h3>
+                                <i>📝</i>
+                                <span>Code source</span>
+                            </h3>
+                            <div class="code-actions">
+                                <button id="copyCodeBtn" disabled title="Copier">
+                                    <i>📋</i><span>Copier</span>
+                                </button>
+                                <button id="formatCodeBtn" disabled title="Formater">
+                                    <i>✨</i><span>Formater</span>
+                                </button>
+                            </div>
+                        </div>
+                        <textarea id="fileContent" spellcheck="false" placeholder="Sélectionnez un fichier HTML..." readonly></textarea>
+                    </div>
+                </div>
+
+                <!-- Onglet Vue partagée -->
+                <div class="tab-content" id="splitTab">
+                    <div>
+                        <div class="preview-frame">
+                            <iframe id="splitPreview" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals" style="width: 100%; height: 100%; border: none;"></iframe>
+                        </div>
+                        <div class="code-container">
+                            <div class="code-header">
+                                <h3><span>Code source</span></h3>
+                            </div>
+                            <textarea id="splitCode" readonly placeholder="Code source..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="math-footer">
+            <p>Visualiseur Universel v4.0 | Adapté à tous les écrans</p>
+        </footer>
+    </div>
+
+    <!-- Contrôles plein écran flottants -->
+    <div class="fullscreen-controls">
+        <button class="math-btn exit-fullscreen" id="exitFullscreenBtn" style="display: none;">
+            <i>⛶</i><span>Quitter</span>
+        </button>
+        <button class="math-btn primary" id="fullscreenRefreshBtn" style="display: none;">
+            <i>🔄</i><span>Rafraîchir</span>
+        </button>
+    </div>
+
+    <script>
+        // Générer les symboles mathématiques en arrière-plan
+        function createMathBackground() {
+            const background = document.getElementById('mathBackground');
+            const symbols = ['∫', '∑', '∏', '√', '∞', 'π', 'θ', 'λ', 'μ', 'σ', 'α', 'β', 'γ', 'Δ', 'Ω'];
+            const count = Math.floor(window.innerWidth / 50); // Nombre de symboles adaptatif
+            
+            for (let i = 0; i < count; i++) {
+                const symbol = document.createElement('div');
+                symbol.className = 'math-symbol';
+                symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                symbol.style.left = Math.random() * 100 + '%';
+                symbol.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                symbol.style.animationDelay = (Math.random() * 5) + 's';
+                symbol.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                background.appendChild(symbol);
+            }
+        }
+
+        // Éléments DOM
+        const fileInput = document.getElementById('fileInput');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const loadInPreviewBtn = document.getElementById('loadInPreviewBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const exitFullscreenBtn = document.getElementById('exitFullscreenBtn');
+        const fullscreenRefreshBtn = document.getElementById('fullscreenRefreshBtn');
+        const copyCodeBtn = document.getElementById('copyCodeBtn');
+        const formatCodeBtn = document.getElementById('formatCodeBtn');
+        
+        const livePreview = document.getElementById('livePreview');
+        const splitPreview = document.getElementById('splitPreview');
+        const fileContent = document.getElementById('fileContent');
+        const splitCode = document.getElementById('splitCode');
+        
+        const fileInfoBar = document.getElementById('fileInfoBar');
+        const fileInfoName = document.getElementById('fileInfoName');
+        const fileInfoSize = document.getElementById('fileInfoSize');
+        const fileInfoDate = document.getElementById('fileInfoDate');
+        const fileInfoLines = document.getElementById('fileInfoLines');
+
+        // État
+        let currentFileContent = '';
+        let currentFileName = '';
+        let currentFileDate = '';
+        let isFullscreen = false;
+        let currentTab = 'preview';
+
+        // Initialisation
+        createMathBackground();
+        
+        // Recalculer les symboles au redimensionnement
+        window.addEventListener('resize', () => {
+            const background = document.getElementById('mathBackground');
+            background.innerHTML = '';
+            createMathBackground();
+        });
+
+        // Gestion des onglets
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                tab.classList.add('active');
+                const tabId = tab.dataset.tab + 'Tab';
+                document.getElementById(tabId).classList.add('active');
+                currentTab = tab.dataset.tab;
+                
+                if (tab.dataset.tab === 'split' && currentFileContent) {
+                    updatePreview(splitPreview, currentFileContent);
+                    splitCode.value = currentFileContent;
+                }
+            });
+        });
+
+        // Gestionnaire de fichier
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            
+            if (!file) {
+                resetDisplay();
+                return;
+            }
+            
+            fileNameDisplay.textContent = file.name.length > 30 ? file.name.substring(0, 27) + '...' : file.name;
+            
+            if (!file.name.match(/\.(html|htm)$/i)) {
+                showError('Veuillez sélectionner un fichier HTML (.html ou .htm)');
+                fileInput.value = '';
+                return;
+            }
+            
+            currentFileName = file.name;
+            currentFileDate = new Date(file.lastModified).toLocaleString();
+            
+            fileInfoName.textContent = file.name.length > 40 ? file.name.substring(0, 37) + '...' : file.name;
+            fileInfoSize.textContent = formatFileSize(file.size);
+            fileInfoDate.textContent = currentFileDate;
+            
+            fileContent.value = 'Chargement en cours...';
+            livePreview.srcdoc = '<html><body style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial; color: #666; text-align: center; padding: 20px;"><div>Chargement en cours...</div></body></html>';
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    currentFileContent = e.target.result;
+                    
+                    const lines = currentFileContent.split('\n').length;
+                    fileInfoLines.textContent = lines + ' lignes';
+                    
+                    fileContent.value = currentFileContent;
+                    splitCode.value = currentFileContent;
+                    
+                    updatePreview(livePreview, currentFileContent);
+                    updatePreview(splitPreview, currentFileContent);
+                    
+                    fileInfoBar.style.display = 'flex';
+                    enableButtons(true);
+                    
+                } catch (error) {
+                    showError('Erreur lors de la lecture du fichier : ' + error.message);
+                }
+            };
+            
+            reader.onerror = function() {
+                showError('Erreur lors de la lecture du fichier');
+            };
+            
+            reader.readAsText(file);
+        });
+
+        function updatePreview(iframe, content) {
+            try {
+                iframe.srcdoc = content;
+            } catch (error) {
+                console.error('Erreur lors de la mise à jour de l\'aperçu:', error);
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' o';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' Ko';
+            return (bytes / (1024 * 1024)).toFixed(2) + ' Mo';
+        }
+
+        function enableButtons(enabled) {
+            loadInPreviewBtn.disabled = !enabled;
+            refreshBtn.disabled = !enabled;
+            clearBtn.disabled = !enabled;
+            fullscreenBtn.disabled = !enabled;
+            copyCodeBtn.disabled = !enabled;
+            formatCodeBtn.disabled = !enabled;
+        }
+
+        function showError(message) {
+            fileContent.value = 'Erreur : ' + message;
+            livePreview.srcdoc = `<html><body style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial; color: #e74c3c; text-align: center; padding: 20px;"><div>❌ ${message}</div></body></html>`;
+            splitPreview.srcdoc = livePreview.srcdoc;
+            fileInfoBar.style.display = 'none';
+            enableButtons(false);
+        }
+
+        function resetDisplay() {
+            fileContent.value = '';
+            splitCode.value = '';
+            const emptyMessage = '<html><body style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial; color: #999; text-align: center; padding: 20px;"><div>Sélectionnez un fichier HTML</div></body></html>';
+            livePreview.srcdoc = emptyMessage;
+            splitPreview.srcdoc = emptyMessage;
+            fileNameDisplay.textContent = 'Aucun fichier';
+            fileInfoBar.style.display = 'none';
+            currentFileContent = '';
+            enableButtons(false);
+        }
+
+        function enterFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                document.body.classList.add('fullscreen-mode');
+                isFullscreen = true;
+                
+                fullscreenBtn.style.display = 'none';
+                exitFullscreenBtn.style.display = 'flex';
+                fullscreenRefreshBtn.style.display = 'flex';
+                
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.querySelector('[data-tab="preview"]').classList.add('active');
+                document.getElementById('previewTab').classList.add('active');
+            }
+        }
+
+        function exitFullscreen() {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+                document.body.classList.remove('fullscreen-mode');
+                isFullscreen = false;
+                
+                fullscreenBtn.style.display = 'flex';
+                exitFullscreenBtn.style.display = 'none';
+                fullscreenRefreshBtn.style.display = 'none';
+                
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.querySelector(`[data-tab="${currentTab}"]`).classList.add('active');
+                document.getElementById(currentTab + 'Tab').classList.add('active');
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                document.body.classList.remove('fullscreen-mode');
+                isFullscreen = false;
+                fullscreenBtn.style.display = 'flex';
+                exitFullscreenBtn.style.display = 'none';
+                fullscreenRefreshBtn.style.display = 'none';
+            }
+        });
+
+        fullscreenBtn.addEventListener('click', enterFullscreen);
+        exitFullscreenBtn.addEventListener('click', exitFullscreen);
+
+        fullscreenRefreshBtn.addEventListener('click', function() {
+            if (currentFileContent) {
+                updatePreview(livePreview, currentFileContent);
+                updatePreview(splitPreview, currentFileContent);
+                
+                this.style.transform = 'rotate(180deg)';
+                setTimeout(() => {
+                    this.style.transform = 'rotate(0deg)';
+                }, 500);
+            }
+        });
+
+        loadInPreviewBtn.addEventListener('click', function() {
+            if (currentFileContent) {
+                updatePreview(livePreview, currentFileContent);
+                updatePreview(splitPreview, currentFileContent);
+                
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 200);
+            }
+        });
+
+        refreshBtn.addEventListener('click', function() {
+            if (currentFileContent) {
+                updatePreview(livePreview, currentFileContent);
+                updatePreview(splitPreview, currentFileContent);
+                
+                this.style.transform = 'rotate(180deg)';
+                setTimeout(() => {
+                    this.style.transform = 'rotate(0deg)';
+                }, 500);
+            }
+        });
+
+        clearBtn.addEventListener('click', function() {
+            fileInput.value = '';
+            resetDisplay();
+        });
+
+        copyCodeBtn.addEventListener('click', function() {
+            if (currentFileContent) {
+                navigator.clipboard.writeText(currentFileContent).then(() => {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i>✓</i><span>Copié !</span>';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                    }, 2000);
+                });
+            }
+        });
+
+        formatCodeBtn.addEventListener('click', function() {
+            if (currentFileContent) {
+                try {
+                    const formatted = formatHTML(currentFileContent);
+                    fileContent.value = formatted;
+                    splitCode.value = formatted;
+                    currentFileContent = formatted;
+                } catch (e) {
+                    console.error('Erreur de formatage:', e);
+                }
+            }
+        });
+
+        function formatHTML(html) {
+            let formatted = '';
+            let indent = 0;
+            const lines = html.split(/>\s*</);
+            
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i].match(/^\/\w/)) {
+                    indent--;
+                }
+                
+                formatted += '  '.repeat(Math.max(0, indent)) + '<' + lines[i] + '>\n';
+                
+                if (lines[i].match(/^<?\w[^>]*[^\/]$/) && !lines[i].match(/^(br|hr|img|input|link|meta)/)) {
+                    indent++;
+                }
+            }
+            
+            return formatted;
+        }
+
+        window.addEventListener('beforeunload', function() {
+            if (currentFileContent) {
+                localStorage.setItem('lastHtmlContent', currentFileContent);
+                localStorage.setItem('lastFileName', currentFileName);
+            }
+        });
+
+        window.addEventListener('load', function() {
+            const lastContent = localStorage.getItem('lastHtmlContent');
+            const lastName = localStorage.getItem('lastFileName');
+            
+            if (lastContent && lastName && window.innerWidth > 768) {
+                if (confirm('Voulez-vous restaurer le dernier fichier consulté ?')) {
+                    currentFileContent = lastContent;
+                    currentFileName = lastName;
+                    
+                    fileContent.value = lastContent;
+                    splitCode.value = lastContent;
+                    updatePreview(livePreview, lastContent);
+                    updatePreview(splitPreview, lastContent);
+                    
+                    fileNameDisplay.textContent = lastName.length > 30 ? lastName.substring(0, 27) + '...' : lastName;
+                    fileInfoName.textContent = lastName.length > 40 ? lastName.substring(0, 37) + '...' : lastName;
+                    fileInfoLines.textContent = lastContent.split('\n').length + ' lignes';
+                    fileInfoBar.style.display = 'flex';
+                    
+                    enableButtons(true);
+                }
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isFullscreen) {
+                exitFullscreen();
+            }
+            
+            if (e.key === 'F11' && currentFileContent) {
+                e.preventDefault();
+                if (isFullscreen) {
+                    exitFullscreen();
+                } else {
+                    enterFullscreen();
+                }
+            }
+        });
+
+        // Détection du mode paysage/orientation
+        window.addEventListener('orientationchange', function() {
+            setTimeout(() => {
+                if (currentFileContent) {
+                    updatePreview(livePreview, currentFileContent);
+                    updatePreview(splitPreview, currentFileContent);
+                }
+            }, 200);
+        });
+    </script>
+</body>
+</html>
