@@ -1420,6 +1420,8 @@
             <ul>
                 <li><a href="Géocollege.html" target="_blank"><i class="fas fa-draw-polygon"></i> Géométrie (Géocollege)</a></li>
                 <li><a href="lecteur.html" target="_blank"><i class="fas fa-microchip"></i> Simulation (Lecteur)</a></li>
+                <!-- Nouveau lien pour ouvrir Chrome -->
+                <li><a href="#" id="open-chrome"><i class="fab fa-chrome"></i> Ouvrir dans Chrome</a></li>
             </ul>
         </div>
         
@@ -2406,6 +2408,49 @@
                         alert('Outil non disponible');
                 }
             };
+
+            // Fonction pour ouvrir Chrome
+            document.getElementById('open-chrome').addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Demander l'URL à ouvrir
+                const url = prompt("Entrez l'URL à ouvrir dans Chrome :", "https://www.google.com");
+                
+                if (url) {
+                    // Tentative d'ouverture dans Chrome
+                    // Note: Cette approche utilise le protocole de registre Windows pour Chrome
+                    // Cela peut fonctionner uniquement sur certains navigateurs et systèmes d'exploitation
+                    
+                    const chromePaths = [
+                        'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+                        'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+                        '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', // macOS
+                        'google-chrome' // Linux
+                    ];
+                    
+                    // Pour une solution plus universelle, nous utilisons la méthode navigator.msLaunchUri
+                    // ou une alternative qui tente d'ouvrir Chrome
+                    
+                    // Méthode 1: Utiliser le protocole chrome://new-tab-page (ne fonctionne pas directement)
+                    // Méthode 2: Ouvrir dans un nouvel onglet du navigateur actuel
+                    
+                    // Solution simple: ouvrir dans un nouvel onglet du navigateur actuel
+                    // L'utilisateur pourra choisir Chrome manuellement
+                    window.open(url, '_blank');
+                    
+                    // Message d'information
+                    alert("L'URL s'ouvre dans un nouvel onglet. Si vous souhaitez l'ouvrir spécifiquement dans Chrome, copiez l'URL et collez-la manuellement dans Chrome.");
+                    
+                    // Alternative: essayer d'utiliser le protocole pour ouvrir Chrome
+                    // Cette approche est limitée et peut ne pas fonctionner
+                    try {
+                        // Tentative d'ouverture avec le protocole chrome:// (ne fonctionne pas)
+                        // window.location.href = 'chrome://new-tab-page';
+                    } catch (error) {
+                        console.log("Impossible d'ouvrir directement Chrome");
+                    }
+                }
+            });
             
             // Initialiser l'aperçu
             loadChapter('situation-probleme');
